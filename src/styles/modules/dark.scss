@@ -1,0 +1,23 @@
+html.dark {
+  --ea-primary: #26d9e8;
+  --ea-primary-soft: rgba(38, 217, 232, 0.18);
+  --ea-primary-disabled: rgba(38, 217, 232, 0.12);
+  --ea-text: #ffffff;
+  --ea-text-light: #e2e7f2;
+  --ea-text-light2: #a4acbd;
+  --ea-fill-color: #08111f;
+  --ea-fill-color2: rgba(14, 26, 44, 0.72);
+  --ea-fill-color3: rgba(16, 31, 52, 0.56);
+  --ea-fill-color5: rgba(12, 25, 36, 0.68);
+  --ea-fill-color6: rgba(16, 28, 45, 0.9);
+  --ea-border-color: rgba(122, 241, 253, 0.28);
+  --ea-mask-background: radial-gradient(circle at top, rgba(73, 130, 214, 0.36), transparent 38%),
+    radial-gradient(circle at bottom right, rgba(38, 217, 232, 0.2), transparent 28%),
+    linear-gradient(135deg, #07101c 0%, #0f2139 48%, #122846 100%);
+  --ea-panel-background: rgba(8, 18, 33, 0.55);
+  --ea-panel-backdrop: blur(18px);
+}
+
+html.dark body {
+  background: var(--ea-mask-background);
+}

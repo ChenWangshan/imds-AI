@@ -1,0 +1,117 @@
+:root {
+  --ea-fz-small: 12px;
+  --ea-lh-small: 18px;
+  --ea-fz: 14px;
+  --ea-lh: 20px;
+  --ea-fz-middle: 16px;
+  --ea-lh-middle: 22px;
+  --ea-fz-special: 20px;
+  --ea-lh-special: 28px;
+  --ea-fz-large: 32px;
+  --ea-lh-large: 40px;
+
+  --ea-gap4: 4px;
+  --ea-gap8: 8px;
+  --ea-gap12: 12px;
+  --ea-gap16: 16px;
+  --ea-gap20: 20px;
+  --ea-gap24: 24px;
+  --ea-gap32: 32px;
+
+  --ea-radius-small: 6px;
+  --ea-radius: 12px;
+  --ea-radius-large: 24px;
+  --ea-transition: 0.25s ease;
+  --ea-shadow: 0 20px 60px rgba(15, 23, 42, 0.22);
+  --ea-primary-disabled: rgba(12, 107, 218, 0.12);
+
+  color: var(--ea-text-light);
+  font-family:
+    "PingFang SC",
+    "Hiragino Sans GB",
+    "Microsoft YaHei",
+    sans-serif;
+}
+
+body {
+  color: var(--ea-text-light);
+  background: var(--ea-fill-color);
+}
+
+.el-select__wrapper,
+.el-input-number,
+.el-input-number .el-input__wrapper {
+  border: 1px solid var(--ea-border-color);
+  background: var(--ea-fill-color5);
+  box-shadow: none !important;
+  backdrop-filter: var(--ea-panel-backdrop);
+  transition:
+    border-color var(--ea-transition),
+    background var(--ea-transition);
+}
+
+.el-select__wrapper {
+  min-height: 40px;
+  border-radius: 12px;
+}
+
+.el-select__wrapper:hover,
+.el-select__wrapper.is-focused,
+.el-input-number:hover,
+.el-input-number.is-controls-right:hover,
+.el-input-number .el-input__wrapper:hover,
+.el-input-number .el-input__wrapper.is-focus {
+  border-color: var(--ea-primary);
+}
+
+.el-select__placeholder,
+.el-select__selected-item,
+.el-input-number .el-input__inner {
+  color: var(--ea-text-light);
+}
+
+.el-select__caret,
+.el-input-number__increase,
+.el-input-number__decrease {
+  color: var(--ea-text-light2);
+}
+
+.el-input-number {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.el-input-number .el-input__wrapper {
+  min-height: 40px;
+  border: 0;
+  border-radius: 0;
+}
+
+.el-input-number__increase,
+.el-input-number__decrease {
+  border-left: 1px solid var(--ea-border-color);
+  background: var(--ea-fill-color3);
+}
+
+.el-select-dropdown.el-popper,
+.el-popper.is-light .el-select-dropdown {
+  border: 1px solid var(--ea-border-color);
+  border-radius: 14px;
+  background: var(--ea-fill-color6);
+  box-shadow: var(--ea-shadow);
+  backdrop-filter: var(--ea-panel-backdrop);
+}
+
+.el-select-dropdown__item {
+  color: var(--ea-text-light);
+}
+
+.el-select-dropdown__item.hover,
+.el-select-dropdown__item.is-hovering {
+  background: var(--ea-primary-disabled);
+}
+
+.el-select-dropdown__item.is-selected {
+  color: var(--ea-primary);
+  font-weight: 700;
+}

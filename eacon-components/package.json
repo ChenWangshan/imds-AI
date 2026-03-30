@@ -1,0 +1,13 @@
+{
+    "name": "eacon-components",
+    "version": "2.0.0",
+    "module": "./lib/index.js",
+    "style": "./lib/index.css",
+    "exports": {
+        ".": {
+            "import": "./lib/index.js",
+            "require": "./lib/index.umd.cjs"
+        },
+        "./index.css": "./lib/index.css"
+    }
+}

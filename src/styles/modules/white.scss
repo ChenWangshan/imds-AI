@@ -1,0 +1,23 @@
+html.white {
+  --ea-primary: #0c6bda;
+  --ea-primary-soft: rgba(12, 107, 218, 0.12);
+  --ea-primary-disabled: rgba(12, 107, 218, 0.12);
+  --ea-text: #1f2a37;
+  --ea-text-light: #31435c;
+  --ea-text-light2: #606d85;
+  --ea-fill-color: #edf3fa;
+  --ea-fill-color2: rgba(255, 255, 255, 0.7);
+  --ea-fill-color3: rgba(248, 251, 255, 0.92);
+  --ea-fill-color5: rgba(255, 255, 255, 0.88);
+  --ea-fill-color6: rgba(255, 255, 255, 0.96);
+  --ea-border-color: rgba(12, 107, 218, 0.16);
+  --ea-mask-background: radial-gradient(circle at top left, rgba(61, 136, 226, 0.2), transparent 32%),
+    radial-gradient(circle at bottom right, rgba(98, 152, 230, 0.16), transparent 30%),
+    linear-gradient(135deg, #f7fbff 0%, #edf3fa 42%, #dfe9f6 100%);
+  --ea-panel-background: rgba(255, 255, 255, 0.6);
+  --ea-panel-backdrop: blur(18px);
+}
+
+html.white body {
+  background: var(--ea-mask-background);
+}
