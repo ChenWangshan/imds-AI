@@ -81,7 +81,7 @@ async function handleSubmit() {
   try {
     await authStore.login(form.username, form.password);
     ElMessage.success(t("common.loginSuccess"));
-    router.replace("/home");
+    router.replace("/");
   } catch (error) {
     if (typeof error === "object" && error && "message" in error) {
       const message = String(error.message);
@@ -148,7 +148,7 @@ async function handleSubmit() {
   margin-top: 8px;
   border: 0;
   border-radius: 14px;
-  background: linear-gradient(135deg, var(--ea-primary) 0%, #7caef7 100%);
+  background: var(--app-login-submit);
 }
 
 .login-card :deep(.el-form-item__label),
@@ -159,12 +159,8 @@ async function handleSubmit() {
 .login-card :deep(.el-input__wrapper) {
   min-height: 40px;
   border: 1px solid transparent;
-  background: rgba(255, 255, 255, 0.74);
+  background: var(--app-login-input-bg);
   box-shadow: none;
-}
-
-html.dark .login-card :deep(.el-input__wrapper) {
-  background: rgba(5, 10, 20, 0.42);
 }
 
 @media (max-width: 960px) {

@@ -1,23 +1,24 @@
 <template>
   <header class="layouts-header">
     <div class="layouts-header__brand" @click="router.push('/home')">
-      <div class="layouts-header__logo">EA</div>
+      <div class="layouts-header__logo" aria-label="EACON">
+        <span>EACON</span>
+      </div>
       <div class="layouts-header__divider" />
-      <div class="layouts-header__title">数据管理平台</div>
+      <div class="layouts-header__title">智慧矿山</div>
     </div>
 
     <div class="layouts-header__actions">
-      <el-button circle class="layouts-header__theme" @click="globalStore.toggleTheme">
+      <el-button circle class="layouts-header__action" @click="globalStore.toggleTheme">
         <el-icon v-if="globalStore.isDark"><Sunny /></el-icon>
         <el-icon v-else><Moon /></el-icon>
       </el-button>
 
-      <div class="layouts-header__user">
-        <span class="label">当前用户</span>
-        <strong>{{ authStore.currentUser?.username || "-" }}</strong>
+      <div class="layouts-header__avatar">
+        <span>{{ (authStore.currentUser?.username || "U").slice(0, 1).toUpperCase() }}</span>
       </div>
 
-      <el-button class="layouts-header__logout" @click="handleLogout">退出登录</el-button>
+      <el-button class="layouts-header__logout" @click="handleLogout">退出</el-button>
     </div>
   </header>
 </template>
@@ -44,10 +45,11 @@ function handleLogout() {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
-  padding: 0 18px;
-  border-bottom: 1px solid var(--ea-border-color);
-  background: var(--ea-fill-color6);
+  min-height: 72px;
+  padding: 0 22px;
+  border-bottom: 1px solid var(--app-header-border);
+  background: var(--app-header-bg);
+  box-shadow: inset 0 -1px 0 rgba(132, 150, 182, 0.18);
 }
 
 .layouts-header__brand,
@@ -57,72 +59,84 @@ function handleLogout() {
 }
 
 .layouts-header__brand {
-  gap: 14px;
-  min-height: 56px;
+  gap: 18px;
   cursor: pointer;
 }
 
 .layouts-header__logo {
-  display: grid;
-  place-items: center;
-  width: 42px;
-  height: 42px;
-  border-radius: 12px;
-  background: var(--ea-primary-disabled);
-  color: var(--ea-primary);
-  font-weight: 700;
+  display: flex;
+  align-items: center;
+  color: var(--ea-text1);
+  font-size: 32px;
+  font-style: italic;
+  font-weight: 800;
+  letter-spacing: 0.06em;
 }
 
 .layouts-header__divider {
   width: 1px;
-  height: 18px;
-  background: rgba(132, 148, 175, 0.4);
+  height: 34px;
+  background: var(--app-shell-border);
 }
 
 .layouts-header__title {
-  color: var(--ea-text);
-  font-size: 22px;
-  font-weight: 700;
+  color: var(--ea-text1);
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
 }
 
 .layouts-header__actions {
-  gap: 12px;
+  gap: 16px;
 }
 
-.layouts-header__theme {
-  border: 1px solid var(--ea-border-color);
-  background: var(--ea-fill-color5);
-  color: var(--ea-text-light);
+.layouts-header__action {
+  width: 48px;
+  height: 48px;
+  border: 1px solid var(--app-header-action-border);
+  background: var(--app-header-action-bg);
+  color: var(--ea-text2);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
 
-.layouts-header__user {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 14px;
-  border: 1px solid var(--ea-border-color);
-  border-radius: 999px;
-  background: var(--ea-fill-color5);
-  color: var(--ea-text-light2);
-}
-
-.layouts-header__user strong {
-  color: var(--ea-text);
+.layouts-header__avatar {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border: 1px solid var(--app-header-action-border);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.22), transparent 40%),
+    var(--app-avatar-bg);
+  color: var(--ea-text5);
+  font-size: 18px;
+  font-weight: 700;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
 }
 
 .layouts-header__logout {
-  border-radius: 999px;
+  height: 40px;
+  padding: 0 18px;
+  border: 1px solid var(--app-header-action-border);
+  border-radius: 12px;
+  background: var(--app-header-action-bg);
+  color: var(--ea-text1);
 }
 
 @media (max-width: 960px) {
   .layouts-header {
-    align-items: flex-start;
-    flex-direction: column;
+    flex-wrap: wrap;
+    gap: 14px;
     padding: 14px 18px;
   }
 
-  .layouts-header__actions {
-    flex-wrap: wrap;
+  .layouts-header__title {
+    font-size: 20px;
+  }
+
+  .layouts-header__logo {
+    font-size: 24px;
   }
 }
 </style>

@@ -23,21 +23,12 @@ const router = createRouter({
         {
           path: "/system",
           name: "system",
-          redirect: "/system/dictionary",
+          redirect: "/system/user",
           meta: {
             icon: "setting",
             title: "系统管理",
           },
           children: [
-            {
-              path: "/system/dictionary",
-              name: "dictionary",
-              component: () => import("@/views/system/dictionary.vue"),
-              meta: {
-                icon: "memo",
-                title: "字典管理",
-              },
-            },
             {
               path: "/system/user",
               name: "user",
@@ -45,6 +36,15 @@ const router = createRouter({
               meta: {
                 icon: "user",
                 title: "用户管理",
+              },
+            },
+            {
+              path: "/system/dictionary",
+              name: "dictionary",
+              component: () => import("@/views/system/dictionary.vue"),
+              meta: {
+                icon: "memo",
+                title: "字典管理",
               },
             },
             {

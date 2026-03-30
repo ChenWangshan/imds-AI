@@ -14,7 +14,7 @@ function readStorage<T>(key: string, fallback: T): T {
 }
 
 export const useGlobalStore = defineStore("global", () => {
-  const theme = ref<AppTheme>(readStorage<AppTheme>(THEME_KEY, "white"));
+  const theme = ref<AppTheme>(readStorage<AppTheme>(THEME_KEY, "dark"));
   const language = ref<AppLanguage>(readStorage<AppLanguage>(LANGUAGE_KEY, "zh"));
   const lastRoute = ref("/login");
 

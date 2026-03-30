@@ -90,7 +90,7 @@ const { t } = useI18n();
   bottom: 8%;
   width: 420px;
   height: 420px;
-  background: radial-gradient(circle, rgba(126, 181, 248, 0.18) 0%, transparent 72%);
+  background: radial-gradient(circle, var(--app-aurora-secondary) 0%, transparent 72%);
 }
 
 @media (max-width: 960px) {

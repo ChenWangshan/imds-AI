@@ -86,7 +86,7 @@ function handleLanguageChange(language: AppLanguage) {
   width: 1px;
   height: 16px;
   margin: 0 16px;
-  background: rgba(132, 148, 175, 0.45);
+  background: var(--app-shell-border);
 }
 
 .login-header__title {

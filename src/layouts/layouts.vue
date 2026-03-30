@@ -1,26 +1,31 @@
 <template>
   <div class="app-layout">
     <LayoutsHeader />
+
     <div class="app-layout__content">
       <aside class="app-layout__menu">
-        <el-scrollbar>
-          <el-menu
-            :default-active="route.path"
-            :default-openeds="['/system']"
-            class="layout-menu"
-            router
-          >
-            <LayoutsMenuItem
-              v-for="item in menuRoutes"
-              :key="item.path"
-              :route="item"
-            />
-          </el-menu>
-        </el-scrollbar>
+        <div class="app-layout__menu-shell">
+          <el-scrollbar>
+            <el-menu
+              :default-active="activeMenuPath"
+              :default-openeds="openedMenus"
+              class="layout-menu"
+              router
+            >
+              <LayoutsMenuItem
+                v-for="item in menuRoutes"
+                :key="item.path"
+                :route="item"
+              />
+            </el-menu>
+          </el-scrollbar>
+        </div>
       </aside>
 
       <section class="app-layout__main">
-        <RouterView />
+        <div class="app-layout__main-shell">
+          <RouterView />
+        </div>
       </section>
     </div>
   </div>
@@ -40,6 +45,18 @@ const menuRoutes = computed(() => {
   const rootRoute = router.options.routes.find((item) => item.path === "/");
   return rootRoute?.children?.filter((item) => item.meta?.menu !== false) ?? [];
 });
+
+const activeMenuPath = computed(() => {
+  if (route.path.startsWith("/system")) {
+    return "/system/user";
+  }
+
+  return route.path;
+});
+
+const openedMenus = computed(() =>
+  menuRoutes.value.filter((item) => item.children?.length).map((item) => item.path),
+);
 </script>
 
 <style scoped lang="scss">
@@ -48,39 +65,58 @@ const menuRoutes = computed(() => {
   flex-direction: column;
   width: 100%;
   min-height: 100dvh;
+  background: transparent;
 }
 
 .app-layout__content {
   display: flex;
+  align-items: stretch;
   flex: 1 1 auto;
   min-height: 0;
-  padding: 14px;
-  gap: 14px;
+  gap: 18px;
+  padding: 18px;
+  overflow: hidden;
+}
+
+.app-layout__menu,
+.app-layout__main {
+  min-height: 0;
 }
 
 .app-layout__menu {
-  width: 220px;
-  border: 1px solid var(--ea-border-color);
-  border-radius: var(--ea-radius-large);
-  background: var(--ea-fill-color6);
+  flex: 0 0 298px;
+}
+
+.app-layout__main {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.app-layout__menu-shell,
+.app-layout__main-shell {
+  border: 1px solid var(--app-shell-border);
+  border-radius: 16px;
+  background: var(--app-shell-bg);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 0 0 1px var(--app-shell-ring);
+}
+
+.app-layout__menu-shell {
   overflow: hidden;
+  height: calc(100dvh - 126px);
+  max-height: calc(100dvh - 126px);
 }
 
 .layout-menu {
   min-height: 100%;
-  padding: 12px;
+  padding: 16px 14px 20px;
   border: 0;
-  background: transparent;
+  background: var(--app-menu-bg);
   --el-menu-bg-color: transparent;
+  --el-menu-text-color: var(--app-menu-text);
   --el-menu-active-color: var(--ea-primary);
-  --el-menu-text-color: var(--ea-text-light2);
-  --el-menu-hover-bg-color: var(--ea-primary-disabled);
-}
-
-.layout-menu :deep(.el-menu-item),
-.layout-menu :deep(.el-sub-menu__title) {
-  height: 40px;
-  border-radius: 10px;
+  --el-menu-hover-bg-color: var(--app-menu-hover);
 }
 
 .layout-menu :deep(.el-menu) {
@@ -88,27 +124,78 @@ const menuRoutes = computed(() => {
   background: transparent;
 }
 
+.layout-menu :deep(.el-menu-item),
+.layout-menu :deep(.el-sub-menu__title) {
+  height: 48px;
+  margin-bottom: 6px;
+  padding: 0 16px;
+  border-radius: 12px;
+}
+
+.layout-menu :deep(.el-menu-item:hover),
+.layout-menu :deep(.el-sub-menu__title:hover) {
+  background: var(--app-menu-hover);
+}
+
 .layout-menu :deep(.el-menu-item.is-active) {
-  background: var(--ea-primary-disabled);
+  background: var(--app-menu-active-bg);
+  box-shadow: var(--app-menu-active-shadow);
 }
 
-.app-layout__main {
-  flex: 1 1 auto;
+.layout-menu :deep(.el-sub-menu .el-menu-item) {
   min-width: 0;
-  min-height: 0;
-  border: 1px solid var(--ea-border-color);
-  border-radius: var(--ea-radius-large);
-  background: var(--ea-fill-color6);
-  overflow: auto;
+  height: 42px;
+  margin-left: 12px;
+  padding-left: 18px;
+  color: var(--app-menu-subtext);
+  opacity: 0.9;
 }
 
-@media (max-width: 960px) {
+.layout-menu :deep(.el-sub-menu.is-active > .el-sub-menu__title) {
+  color: var(--ea-primary);
+}
+
+.app-layout__main-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  height: calc(100dvh - 126px);
+  padding: 22px;
+  overflow: auto;
+  max-height: calc(100dvh - 126px);
+}
+
+.app-layout__main-shell :deep(> *) {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+@media (max-width: 1100px) {
   .app-layout__content {
     flex-direction: column;
+    overflow: visible;
   }
 
   .app-layout__menu {
+    flex-basis: auto;
     width: 100%;
+  }
+
+  .app-layout__menu-shell,
+  .app-layout__main-shell {
+    height: auto;
+    max-height: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .app-layout__content {
+    gap: 14px;
+    padding: 14px;
+  }
+
+  .app-layout__main-shell {
+    padding: 14px;
   }
 }
 </style>

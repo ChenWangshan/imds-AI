@@ -1,23 +1,55 @@
 html.dark {
-  --ea-primary: #26d9e8;
-  --ea-primary-soft: rgba(38, 217, 232, 0.18);
-  --ea-primary-disabled: rgba(38, 217, 232, 0.12);
-  --ea-text: #ffffff;
-  --ea-text-light: #e2e7f2;
-  --ea-text-light2: #a4acbd;
-  --ea-fill-color: #08111f;
-  --ea-fill-color2: rgba(14, 26, 44, 0.72);
-  --ea-fill-color3: rgba(16, 31, 52, 0.56);
-  --ea-fill-color5: rgba(12, 25, 36, 0.68);
-  --ea-fill-color6: rgba(16, 28, 45, 0.9);
-  --ea-border-color: rgba(122, 241, 253, 0.28);
-  --ea-mask-background: radial-gradient(circle at top, rgba(73, 130, 214, 0.36), transparent 38%),
-    radial-gradient(circle at bottom right, rgba(38, 217, 232, 0.2), transparent 28%),
-    linear-gradient(135deg, #07101c 0%, #0f2139 48%, #122846 100%);
-  --ea-panel-background: rgba(8, 18, 33, 0.55);
+  --ea-text: var(--ea-text1);
+  --ea-text-light: var(--ea-text2);
+  --ea-text-light2: var(--ea-text3);
+  --ea-fill-color: var(--ea-fill1);
+  --ea-fill-color2: rgba(52, 62, 79, 0.82);
+  --ea-fill-color3: rgba(66, 79, 98, 0.72);
+  --ea-fill-color5: rgba(20, 27, 34, 0.42);
+  --ea-fill-color6: rgba(61, 72, 92, 0.94);
+  --ea-border-color: rgba(112, 241, 253, 0.24);
+  --ea-panel-background: rgba(41, 48, 60, 0.58);
   --ea-panel-backdrop: blur(18px);
+  --ea-shadow: 0 20px 60px rgba(10, 14, 20, 0.28);
+
+  --app-body-bg:
+    radial-gradient(circle at top, rgba(112, 241, 253, 0.12), transparent 28%),
+    radial-gradient(circle at bottom right, rgba(104, 191, 253, 0.14), transparent 24%),
+    linear-gradient(180deg, #29303c 0%, #343e4f 100%);
+  --app-shell-bg: linear-gradient(180deg, rgba(66, 79, 98, 0.97) 0%, rgba(52, 62, 79, 0.98) 100%);
+  --app-shell-border: rgba(22, 30, 41, 0.88);
+  --app-shell-ring: rgba(112, 241, 253, 0.08);
+  --app-menu-bg:
+    linear-gradient(165deg, rgba(255, 255, 255, 0.02), transparent 22%),
+    linear-gradient(180deg, rgba(66, 79, 98, 0.96) 0%, rgba(52, 62, 79, 0.98) 100%);
+  --app-menu-text: var(--ea-text2);
+  --app-menu-subtext: rgba(226, 231, 242, 0.88);
+  --app-menu-hover: var(--ea-primary-hover);
+  --app-menu-active-bg: rgba(112, 241, 253, 0.14);
+  --app-menu-active-shadow: inset 3px 0 0 var(--ea-primary);
+  --app-header-bg: linear-gradient(180deg, rgba(66, 79, 98, 0.98) 0%, rgba(52, 62, 79, 0.98) 100%);
+  --app-header-border: rgba(22, 30, 41, 0.92);
+  --app-header-action-bg: rgba(41, 48, 60, 0.92);
+  --app-header-action-border: rgba(79, 99, 125, 0.5);
+  --app-avatar-bg: linear-gradient(180deg, #5f85c5 0%, #35598f 100%);
+  --app-panel-bg: linear-gradient(180deg, rgba(66, 79, 98, 0.86) 0%, rgba(52, 62, 79, 0.94) 100%);
+  --app-panel-bg-strong:
+    radial-gradient(circle at left top, rgba(112, 241, 253, 0.12), transparent 26%),
+    radial-gradient(circle at right center, rgba(104, 191, 253, 0.16), transparent 32%),
+    linear-gradient(145deg, rgba(66, 79, 98, 0.98) 0%, rgba(52, 62, 79, 0.98) 100%);
+  --app-panel-bg-soft: rgba(41, 48, 60, 0.4);
+  --app-panel-border: rgba(79, 99, 125, 0.34);
+  --app-panel-shadow: 0 16px 44px rgba(12, 16, 24, 0.24);
+  --app-accent: var(--ea-primary);
+  --app-accent-soft: rgba(112, 241, 253, 0.18);
+  --app-aurora-secondary: rgba(104, 191, 253, 0.18);
+  --app-hero-title: #f5f8ff;
+  --app-hero-desc: rgba(231, 239, 250, 0.84);
+  --app-hero-muted: rgba(191, 204, 225, 0.84);
+  --app-login-input-bg: rgba(20, 27, 34, 0.54);
+  --app-login-submit: var(--ea-primary-gradient);
 }
 
 html.dark body {
-  background: var(--ea-mask-background);
+  background: var(--app-body-bg);
 }

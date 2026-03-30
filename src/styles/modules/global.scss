@@ -35,7 +35,10 @@
 
 body {
   color: var(--ea-text-light);
-  background: var(--ea-fill-color);
+  background: var(--app-body-bg, var(--ea-fill-color));
+  transition:
+    background var(--ea-transition),
+    color var(--ea-transition);
 }
 
 .el-select__wrapper,
