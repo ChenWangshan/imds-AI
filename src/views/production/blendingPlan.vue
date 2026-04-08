@@ -9,12 +9,9 @@
 </template>
 
 <script setup lang="ts">
-import type {
-  IDetailOption,
-  IFormOption,
-  ITableOption,
-  ITablePageWithCurdOption,
-} from "eacon-components";
+import type { IFormOption } from "eacon-components/src/components/Form/Form.vue";
+import type { ITableOption } from "eacon-components/src/components/Table/TableColumn.vue";
+import type { ITablePageWithCurdOption } from "eacon-components/src/advancedComponents/TablePageWithCurd/TablePageWithCurd.vue";
 
 import {
   createBlendingPlan,
@@ -87,6 +84,7 @@ function createPlanId() {
 }
 
 function normalizeFormData(data: Partial<BlendingPlanFormData>) {
+  // 统一把表单值整理成后端需要的请求结构，避免新增和编辑各自处理一遍。
   return {
     blendingMode: String(data.blendingMode ?? "数值模式") as ModeType,
     completionRatio: Number(data.completionRatio ?? 1),
@@ -269,7 +267,7 @@ const formOptions: IFormOption[] = [
   },
 ];
 
-const detailOptions: IDetailOption[] = [
+const detailOptions: NonNullable<ITablePageWithCurdOption["detailOptions"]> = [
   { label: "计划ID", prop: "planId" },
   { label: "计划名称", prop: "planName" },
   { label: "计划日期", prop: "planDate" },
@@ -302,6 +300,7 @@ const tableOptions: ITableOption[] = [
 ];
 
 function toDisplayRecord(item: BlendingPlanRecord, sequence: number) {
+  // 表格展示层补充序号、吨位和完成比例文案，不改动后端原始字段。
   return {
     ...item,
     completionRatioText: `${item.completionRatio}%`,
@@ -312,6 +311,7 @@ function toDisplayRecord(item: BlendingPlanRecord, sequence: number) {
 }
 
 async function getTableData(params: Record<string, unknown>) {
+  // TablePageWithCurd 约定返回 data + recordsTotal，这里顺手补齐分页序号。
   const currentPage = Number(params.currentPage ?? 1);
   const pageSize = Number(params.pageSize ?? 20);
   const response = await fetchBlendingPlanPage({
@@ -373,6 +373,7 @@ const tabOptions: ITablePageWithCurdOption[] = [
     }),
     getTableData,
     getDetailData,
+    // 新增时先给一组合理默认值，减少用户重复输入。
     getPostData: async () => ({
       blendingMode: "数值模式",
       completionRatio: 1,
@@ -387,6 +388,7 @@ const tabOptions: ITablePageWithCurdOption[] = [
       totalTonnage: 10000,
     }),
     getPutData,
+    // 当前页面已经切到 dispatch-center-AI 的真实 CRUD，不再使用本地 mock。
     handlePost,
     handlePut,
     handleDelete,
