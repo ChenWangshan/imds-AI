@@ -2,10 +2,16 @@
   <div class="app-layout">
     <LayoutsHeader />
 
-    <div class="app-layout__content">
-      <aside class="app-layout__menu">
+    <div
+      class="app-layout__content"
+      :class="{ 'app-layout__content--menu-hidden': globalStore.menuCollapsed }"
+    >
+      <aside
+        class="app-layout__menu"
+        :class="{ 'app-layout__menu--hidden': globalStore.menuCollapsed }"
+      >
         <div class="app-layout__menu-shell">
-          <el-scrollbar>
+          <el-scrollbar class="app-layout__menu-scrollbar">
             <el-menu
               :default-active="activeMenuPath"
               :default-openeds="openedMenus"
@@ -35,11 +41,13 @@
 import { computed } from "vue";
 import { RouterView, useRoute, useRouter } from "vue-router";
 
+import { useGlobalStore } from "@/stores/modules/global";
 import LayoutsHeader from "./layoutsHeader.vue";
 import LayoutsMenuItem from "./layoutsMenuItem.vue";
 
 const route = useRoute();
 const router = useRouter();
+const globalStore = useGlobalStore();
 
 const menuRoutes = computed(() => {
   const rootRoute = router.options.routes.find((item) => item.path === "/");
@@ -48,15 +56,19 @@ const menuRoutes = computed(() => {
 
 const activeMenuPath = computed(() => {
   if (route.path.startsWith("/system")) {
-    return "/system/user";
+    return route.path;
   }
 
   return route.path;
 });
 
-const openedMenus = computed(() =>
-  menuRoutes.value.filter((item) => item.children?.length).map((item) => item.path),
-);
+const openedMenus = computed(() => {
+  if (globalStore.menuCollapsed) {
+    return [];
+  }
+
+  return menuRoutes.value.filter((item) => item.children?.length).map((item) => item.path);
+});
 </script>
 
 <style scoped lang="scss">
@@ -73,9 +85,12 @@ const openedMenus = computed(() =>
   align-items: stretch;
   flex: 1 1 auto;
   min-height: 0;
-  gap: 18px;
   padding: 18px;
   overflow: hidden;
+}
+
+.app-layout__content--menu-hidden .app-layout__main {
+  margin-left: 0;
 }
 
 .app-layout__menu,
@@ -85,11 +100,27 @@ const openedMenus = computed(() =>
 
 .app-layout__menu {
   flex: 0 0 298px;
+  display: flex;
+  transition:
+    flex-basis var(--ea-transition),
+    width var(--ea-transition),
+    margin-right var(--ea-transition),
+    opacity var(--ea-transition);
+}
+
+.app-layout__menu--hidden {
+  flex-basis: 0;
+  width: 0;
+  margin-right: 0;
+  opacity: 0;
+  pointer-events: none;
 }
 
 .app-layout__main {
   flex: 1 1 auto;
   min-width: 0;
+  margin-left: 18px;
+  transition: margin-left var(--ea-transition);
 }
 
 .app-layout__menu-shell,
@@ -103,12 +134,28 @@ const openedMenus = computed(() =>
 }
 
 .app-layout__menu-shell {
+  display: flex;
+  flex: 1 1 auto;
+  width: 100%;
+  min-height: 0;
   overflow: hidden;
   height: calc(100dvh - 126px);
   max-height: calc(100dvh - 126px);
 }
 
+.app-layout__menu-scrollbar {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.app-layout__menu-scrollbar :deep(.el-scrollbar__wrap),
+.app-layout__menu-scrollbar :deep(.el-scrollbar__view) {
+  min-height: 100%;
+}
+
 .layout-menu {
+  height: 100%;
+  width: 100%;
   min-height: 100%;
   padding: 16px 14px 20px;
   border: 0;

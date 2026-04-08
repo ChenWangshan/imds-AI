@@ -3,30 +3,15 @@
     <section class="home-hero">
       <div class="home-hero__content">
         <p class="home-hero__eyebrow">SMART MINE INTELLIGENCE HUB</p>
-        <h1>让矿山现场的每一次采装与运输，都被精准看见。</h1>
+        <h1>智慧矿山中枢</h1>
         <p class="home-hero__desc">
-          以智慧矿山业务为核心，贯通采区、设备、运输与系统管理链路，
-          用更高级的视觉秩序承载复杂数据，用更稳定的智慧矿山能力支撑生产决策。
+          统一承接矿山现场的采装、运输与管理链路，用更清晰的视图组织关键能力。
         </p>
 
-        <div class="home-hero__quote">
-          <span class="home-hero__quote-line" />
-          <p>统一矿山数据入口，服务采、运、管一体化协同。</p>
-        </div>
-
-        <div class="home-hero__meta">
-          <div class="meta-item">
-            <span>当前用户</span>
-            <strong>{{ authStore.currentUser?.username || "-" }}</strong>
-          </div>
-          <div class="meta-item">
-            <span>运行状态</span>
-            <strong>ONLINE</strong>
-          </div>
-          <div class="meta-item">
-            <span>场景定位</span>
-            <strong>智慧矿山中枢</strong>
-          </div>
+        <div class="home-hero__signature">
+          <span>当前用户 {{ authStore.currentUser?.username || "-" }}</span>
+          <i />
+          <span>系统在线运行</span>
         </div>
       </div>
 
@@ -103,73 +88,45 @@
       </div>
     </section>
 
-    <section class="home-strip">
-      <article v-for="item in summary" :key="item.label" class="strip-item">
-        <span>{{ item.label }}</span>
-        <strong>{{ item.value }}</strong>
+    <section class="home-rail">
+      <article class="rail-item">
+        <span>场景聚焦</span>
+        <strong>采 · 运 · 管</strong>
       </article>
-    </section>
-
-    <section class="home-grid">
-      <article class="feature-panel feature-panel--wide">
-        <p class="feature-panel__label">智慧矿山价值</p>
-        <h2>将矿山现场的复杂链路，沉淀为清晰可用的数据能力。</h2>
-        <p class="feature-panel__text">
-          从露天采区、无人矿卡到设备管理与系统治理，首页不再只是一个功能入口，
-          而是面向智慧矿山场景的统一视觉中枢与运营门面。
-        </p>
+      <article class="rail-item">
+        <span>统一入口</span>
+        <strong>设备 / 系统 / 组织</strong>
       </article>
-
-      <article class="feature-panel">
-        <p class="feature-panel__label">业务覆盖</p>
-        <ul class="feature-list">
-          <li>采装运输场景统一呈现</li>
-          <li>系统管理入口集中收口</li>
-          <li>智慧矿山状态实时同步</li>
-        </ul>
-      </article>
-
-      <article class="feature-panel">
-        <p class="feature-panel__label">视觉表达</p>
-        <ul class="feature-list">
-          <li>矿坑层级与设备剪影结合</li>
-          <li>冷青高光强化科技感</li>
-          <li>深色留白塑造高级秩序</li>
-        </ul>
+      <article class="rail-item">
+        <span>平台定位</span>
+        <strong>智慧矿山门面</strong>
       </article>
     </section>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
-
 import { useAuthStore } from "@/stores/modules/auth";
 
 const authStore = useAuthStore();
-
-const summary = computed(() => [
-  { label: "导航模块", value: "02" },
-  { label: "管理子项", value: "03" },
-  { label: "调度视角", value: "采 · 运 · 管" },
-]);
 </script>
 
 <style scoped lang="scss">
 .home-page {
   display: flex;
   flex-direction: column;
-  gap: 22px;
+  gap: 18px;
   min-height: 100%;
 }
 
 .home-hero {
   display: grid;
-  grid-template-columns: minmax(0, 1.02fr) minmax(320px, 0.98fr);
-  gap: 22px;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 0.92fr);
+  gap: 18px;
   align-items: center;
-  min-height: 420px;
-  padding: 34px 36px;
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: 32px 34px;
   border: 1px solid var(--app-panel-border);
   border-radius: 30px;
   background: var(--app-panel-bg-strong);
@@ -179,82 +136,52 @@ const summary = computed(() => [
 }
 
 .home-hero__content {
-  max-width: 700px;
+  max-width: 540px;
 }
 
 .home-hero__eyebrow {
-  margin: 0 0 18px;
+  margin: 0 0 16px;
   color: var(--app-accent);
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 800;
-  letter-spacing: 0.3em;
+  letter-spacing: 0.28em;
 }
 
 .home-hero h1 {
   margin: 0;
   color: var(--app-hero-title);
-  font-size: clamp(34px, 4.6vw, 56px);
+  font-size: clamp(40px, 5vw, 64px);
   font-weight: 800;
   letter-spacing: 0.02em;
-  line-height: 1.08;
+  line-height: 0.98;
 }
 
 .home-hero__desc {
-  max-width: 640px;
   margin: 18px 0 0;
   color: var(--app-hero-desc);
   font-size: 16px;
   line-height: 1.8;
 }
 
-.home-hero__quote {
-  display: flex;
+.home-hero__signature {
+  display: inline-flex;
   align-items: center;
   gap: 14px;
   margin-top: 26px;
-}
-
-.home-hero__quote-line {
-  width: 48px;
-  height: 1px;
-  background: linear-gradient(90deg, var(--app-accent) 0%, transparent 100%);
-}
-
-.home-hero__quote p {
-  margin: 0;
-  color: var(--app-hero-muted);
-  font-size: 14px;
-  letter-spacing: 0.08em;
-}
-
-.home-hero__meta {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 14px;
-  margin-top: 24px;
-}
-
-.meta-item {
-  padding: 18px 18px 16px;
+  padding: 10px 14px;
   border: 1px solid var(--app-panel-border);
-  border-radius: 18px;
+  border-radius: 999px;
   background: var(--app-panel-bg-soft);
-  backdrop-filter: blur(10px);
-}
-
-.meta-item span {
-  display: block;
   color: var(--app-hero-muted);
-  font-size: 12px;
-  letter-spacing: 0.16em;
+  font-size: 13px;
 }
 
-.meta-item strong {
-  display: block;
-  margin-top: 10px;
-  color: var(--app-hero-title);
-  font-size: 20px;
-  font-weight: 800;
+.home-hero__signature i {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--app-accent);
+  box-shadow: 0 0 12px var(--app-accent-soft);
 }
 
 .home-hero__visual {
@@ -262,132 +189,68 @@ const summary = computed(() => [
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 300px;
+  min-height: 260px;
   overflow: hidden;
 }
 
 .mine-scene {
   width: 100%;
-  max-width: 560px;
+  max-width: 540px;
   height: auto;
-  filter: drop-shadow(0 16px 34px rgba(9, 13, 20, 0.34));
+  filter: drop-shadow(0 16px 34px rgba(9, 13, 20, 0.26));
 }
 
-.home-strip {
+.home-rail {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16px;
-}
-
-.strip-item {
-  padding: 22px 26px;
+  gap: 0;
   border: 1px solid var(--app-panel-border);
-  border-radius: 20px;
+  border-radius: 22px;
   background: var(--app-panel-bg);
+  overflow: hidden;
 }
 
-.strip-item span {
+.rail-item {
+  padding: 20px 24px;
+}
+
+.rail-item + .rail-item {
+  border-left: 1px solid var(--app-panel-border);
+}
+
+.rail-item span {
   display: block;
   color: var(--app-hero-muted);
-  font-size: 13px;
+  font-size: 12px;
+  letter-spacing: 0.16em;
 }
 
-.strip-item strong {
+.rail-item strong {
   display: block;
   margin-top: 10px;
   color: var(--app-hero-title);
-  font-size: 34px;
-  font-weight: 800;
-}
-
-.home-grid {
-  display: grid;
-  grid-template-columns: 1.2fr 1fr 1fr;
-  gap: 18px;
-}
-
-.feature-panel {
-  padding: 28px;
-  border: 1px solid var(--app-panel-border);
-  border-radius: 24px;
-  background: var(--app-panel-bg);
-}
-
-.feature-panel--wide {
-  background:
-    radial-gradient(circle at right top, var(--app-accent-soft), transparent 30%),
-    var(--app-panel-bg);
-}
-
-.feature-panel__label {
-  margin: 0 0 16px;
-  color: var(--app-accent);
-  font-size: 12px;
-  font-weight: 800;
-  letter-spacing: 0.22em;
-}
-
-.feature-panel h2 {
-  margin: 0;
-  color: var(--app-hero-title);
-  font-size: 26px;
-  line-height: 1.34;
-}
-
-.feature-panel__text {
-  margin: 18px 0 0;
-  color: var(--app-hero-desc);
-  line-height: 1.9;
-}
-
-.feature-list {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.feature-list li {
-  position: relative;
-  padding-left: 18px;
-  color: var(--app-hero-desc);
-  line-height: 2;
-}
-
-.feature-list li::before {
-  content: "";
-  position: absolute;
-  top: 13px;
-  left: 0;
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--app-accent);
-  box-shadow: 0 0 12px var(--app-accent-soft);
+  font-size: 20px;
+  font-weight: 700;
 }
 
 @media (max-width: 1200px) {
-  .home-hero,
-  .home-grid {
+  .home-hero {
     grid-template-columns: 1fr;
-  }
-
-  .home-hero__visual {
-    min-height: 240px;
   }
 }
 
 @media (max-width: 860px) {
   .home-hero {
-    padding: 28px 24px;
+    padding: 26px 22px;
   }
 
-  .home-hero__meta,
-  .home-strip {
+  .home-rail {
     grid-template-columns: 1fr;
   }
 
-  .strip-item strong {
-    font-size: 28px;
+  .rail-item + .rail-item {
+    border-top: 1px solid var(--app-panel-border);
+    border-left: 0;
   }
 }
 </style>

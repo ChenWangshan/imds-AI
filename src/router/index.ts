@@ -21,6 +21,84 @@ const router = createRouter({
           },
         },
         {
+          path: "/dispatch",
+          name: "dispatch-root",
+          redirect: "/dispatch/map-monitor",
+          meta: {
+            icon: "compass",
+            title: "智能调度",
+          },
+          children: [
+            {
+              path: "/dispatch/map-monitor",
+              name: "map-monitor",
+              component: () => import("@/views/dispatch/mapMonitor.vue"),
+              meta: {
+                icon: "location",
+                title: "地图监控",
+              },
+            },
+          ],
+        },
+        {
+          path: "/production",
+          name: "production-root",
+          redirect: "/production/blending-plan",
+          meta: {
+            icon: "histogram",
+            title: "生产管理",
+          },
+          children: [
+            {
+              path: "/production/blending-plan",
+              name: "blending-plan",
+              component: () => import("@/views/production/blendingPlan.vue"),
+              meta: {
+                icon: "memo",
+                title: "配矿计划",
+              },
+            },
+            {
+              path: "/production/material-progress",
+              name: "material-progress",
+              component: () => import("@/views/production/materialProgress.vue"),
+              meta: {
+                icon: "dataAnalysis",
+                title: "物料进度监控",
+              },
+            },
+          ],
+        },
+        {
+          path: "/device",
+          name: "device-root",
+          redirect: "/device/manage",
+          meta: {
+            icon: "monitor",
+            title: "设备管理",
+          },
+          children: [
+            {
+              path: "/device/manage",
+              name: "device-manage",
+              component: () => import("@/views/system/device.vue"),
+              meta: {
+                icon: "monitor",
+                title: "设备管理",
+              },
+            },
+            {
+              path: "/device/model",
+              name: "device-model",
+              component: () => import("@/views/device/deviceModel.vue"),
+              meta: {
+                icon: "memo",
+                title: "设备型号",
+              },
+            },
+          ],
+        },
+        {
           path: "/system",
           name: "system",
           redirect: "/system/user",

@@ -9,6 +9,11 @@
     </div>
 
     <div class="layouts-header__actions">
+      <el-button circle class="layouts-header__action" @click="globalStore.toggleMenuCollapsed">
+        <el-icon v-if="globalStore.menuCollapsed"><Expand /></el-icon>
+        <el-icon v-else><Fold /></el-icon>
+      </el-button>
+
       <el-button circle class="layouts-header__action" @click="globalStore.toggleTheme">
         <el-icon v-if="globalStore.isDark"><Sunny /></el-icon>
         <el-icon v-else><Moon /></el-icon>
@@ -24,7 +29,7 @@
 </template>
 
 <script setup lang="ts">
-import { Moon, Sunny } from "@element-plus/icons-vue";
+import { Expand, Fold, Moon, Sunny } from "@element-plus/icons-vue";
 import { useRouter } from "vue-router";
 
 import { useAuthStore } from "@/stores/modules/auth";
