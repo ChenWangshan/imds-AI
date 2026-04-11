@@ -73,7 +73,14 @@ apiClient.interceptors.request.use(
     const token = requestConfig.token ?? readStoredToken();
 
     requestConfig.headers = requestConfig.headers ?? {};
-    requestConfig.headers["Content-Type"] = "application/json";
+    const isFormData =
+      typeof FormData !== "undefined" && requestConfig.data instanceof FormData;
+
+    if (isFormData) {
+      delete requestConfig.headers["Content-Type"];
+    } else if (!requestConfig.headers["Content-Type"]) {
+      requestConfig.headers["Content-Type"] = "application/json";
+    }
 
     if (token) {
       requestConfig.headers.Authorization = `Bearer ${token}`;

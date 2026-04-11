@@ -21,10 +21,17 @@ const elementLocale = computed(() =>
   globalStore.language === "zh" ? zhCn : en,
 );
 
+function updateFavicon(theme: "dark" | "white") {
+  const favicon = document.querySelector<HTMLLinkElement>('link[rel="icon"]');
+  if (!favicon) return;
+  favicon.href = theme === "dark" ? "/favicon.svg" : "/favicon-light.svg";
+}
+
 watch(
   () => globalStore.theme,
   (theme) => {
     document.documentElement.className = theme;
+    updateFavicon(theme);
   },
   { immediate: true },
 );

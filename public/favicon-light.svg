@@ -1,0 +1,20 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="fav-light-bg" x1="8" y1="8" x2="56" y2="56" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFFFFF"/>
+      <stop offset="0.5" stop-color="#F3F8FE"/>
+      <stop offset="1" stop-color="#DCE8F6"/>
+    </linearGradient>
+    <linearGradient id="fav-light-line" x1="14" y1="16" x2="50" y2="46" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#23A6E2"/>
+      <stop offset="0.58" stop-color="#0C6BDA"/>
+      <stop offset="1" stop-color="#F0B654"/>
+    </linearGradient>
+  </defs>
+  <rect x="4" y="4" width="56" height="56" rx="18" fill="url(#fav-light-bg)"/>
+  <rect x="4.75" y="4.75" width="54.5" height="54.5" rx="17.25" stroke="#C7D6E6"/>
+  <path d="M16 42L26.4 25.2L32 32.4L40.4 19.6L48 42" stroke="url(#fav-light-line)" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M18 47.2H46" stroke="#9BB1C8" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="40.4" cy="19.6" r="3.4" fill="#F0B654"/>
+  <path d="M45.3 16.1C48.8 17.4 51.7 20.1 53.4 23.6" stroke="#4DB7EA" stroke-width="1.9" stroke-linecap="round"/>
+</svg>

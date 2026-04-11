@@ -18,6 +18,7 @@ export default defineConfig(({ mode }) => {
       },
     },
     server: {
+      host: "0.0.0.0",
       proxy: {
         "/api": {
           target: proxyTarget,
@@ -34,6 +35,9 @@ export default defineConfig(({ mode }) => {
           rewrite: (path) => path.replace(/^\/dispatch-api/, ""),
         },
       },
+    },
+    preview: {
+      host: "0.0.0.0",
     },
   };
 });

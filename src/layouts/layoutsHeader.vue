@@ -1,11 +1,9 @@
 <template>
   <header class="layouts-header">
     <div class="layouts-header__brand" @click="router.push('/home')">
-      <div class="layouts-header__logo" aria-label="EACON">
-        <span>EACON</span>
-      </div>
+      <img class="layouts-header__logo" :src="brandLogoSrc" alt="智慧矿山综管平台" />
       <div class="layouts-header__divider" />
-      <div class="layouts-header__title">智慧矿山</div>
+      <div class="layouts-header__title">智慧矿山综管平台</div>
     </div>
 
     <div class="layouts-header__actions">
@@ -29,6 +27,7 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from "vue";
 import { Expand, Fold, Moon, Sunny } from "@element-plus/icons-vue";
 import { useRouter } from "vue-router";
 
@@ -38,6 +37,7 @@ import { useGlobalStore } from "@/stores/modules/global";
 const router = useRouter();
 const authStore = useAuthStore();
 const globalStore = useGlobalStore();
+const brandLogoSrc = computed(() => (globalStore.isDark ? "/brand-logo.svg" : "/brand-logo-light.svg"));
 
 function handleLogout() {
   authStore.logout();
@@ -69,13 +69,12 @@ function handleLogout() {
 }
 
 .layouts-header__logo {
-  display: flex;
-  align-items: center;
-  color: var(--ea-text1);
-  font-size: 32px;
-  font-style: italic;
-  font-weight: 800;
-  letter-spacing: 0.06em;
+  display: block;
+  width: 220px;
+  height: 64px;
+  object-fit: contain;
+  object-position: left center;
+  filter: drop-shadow(0 8px 16px rgba(10, 16, 28, 0.18));
 }
 
 .layouts-header__divider {
@@ -89,6 +88,7 @@ function handleLogout() {
   font-size: 24px;
   font-weight: 800;
   letter-spacing: 0.04em;
+  white-space: nowrap;
 }
 
 .layouts-header__actions {
@@ -129,6 +129,17 @@ function handleLogout() {
   color: var(--ea-text1);
 }
 
+@media (max-width: 1200px) {
+  .layouts-header__logo {
+    width: 180px;
+    height: 54px;
+  }
+
+  .layouts-header__title {
+    font-size: 20px;
+  }
+}
+
 @media (max-width: 960px) {
   .layouts-header {
     flex-wrap: wrap;
@@ -136,12 +147,17 @@ function handleLogout() {
     padding: 14px 18px;
   }
 
+  .layouts-header__brand {
+    gap: 12px;
+  }
+
   .layouts-header__title {
-    font-size: 20px;
+    font-size: 18px;
   }
 
   .layouts-header__logo {
-    font-size: 24px;
+    width: 144px;
+    height: 44px;
   }
 }
 </style>

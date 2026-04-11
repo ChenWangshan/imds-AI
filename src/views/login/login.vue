@@ -5,7 +5,7 @@
     <LoginHeader />
     <main class="login-page__main">
       <section class="login-page__hero">
-        <p class="hero__eyebrow">EACON MINING</p>
+        <p class="hero__eyebrow">SMART MINE INTEGRATED PLATFORM</p>
         <h1>{{ t("common.appName") }}</h1>
         <p class="hero__subtitle">{{ t("common.welcome") }}</p>
       </section>

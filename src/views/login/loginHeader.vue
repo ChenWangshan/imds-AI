@@ -1,7 +1,7 @@
 <template>
   <header class="login-header">
     <div class="login-header__left">
-      <div class="login-header__logo">EA</div>
+      <img class="login-header__logo" :src="faviconSrc" alt="智慧矿山综管平台" />
       <div class="login-header__divider" />
       <div class="login-header__title">{{ t("common.appName") }}</div>
     </div>
@@ -29,7 +29,7 @@
 </template>
 
 <script setup lang="ts">
-import { watch } from "vue";
+import { computed, watch } from "vue";
 import { Moon, Sunny } from "@element-plus/icons-vue";
 import { useI18n } from "vue-i18n";
 
@@ -38,6 +38,7 @@ import { useGlobalStore, type AppLanguage } from "@/stores/modules/global";
 
 const { t } = useI18n();
 const store = useGlobalStore();
+const faviconSrc = computed(() => (store.isDark ? "/favicon.svg" : "/favicon-light.svg"));
 
 watch(
   () => store.language,
@@ -69,17 +70,10 @@ function handleLanguageChange(language: AppLanguage) {
 }
 
 .login-header__logo {
-  display: grid;
-  place-items: center;
   width: 42px;
   height: 42px;
-  border: 1px solid var(--ea-border-color);
   border-radius: 14px;
-  background: var(--ea-panel-background);
-  box-shadow: var(--ea-shadow);
-  color: var(--ea-primary);
-  font-weight: 700;
-  letter-spacing: 0.08em;
+  box-shadow: 0 10px 24px rgba(10, 18, 32, 0.16);
 }
 
 .login-header__divider {

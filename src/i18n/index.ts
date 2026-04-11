@@ -3,7 +3,7 @@ import { createI18n } from "vue-i18n";
 const messages = {
   zh: {
     common: {
-      appName: "智慧矿山调度系统",
+      appName: "智慧矿山综管平台",
       login: "登录",
       username: "用户名",
       usernamePlaceholder: "请输入用户名",
@@ -15,7 +15,7 @@ const messages = {
       invalidCredentials: "用户名或密码不正确。",
       currentUser: "当前登录用户",
       networkError: "接口调用失败，请确认 java-AI 服务已启动。",
-      welcomeTitle: "欢迎来到智慧矿山调度系统",
+      welcomeTitle: "欢迎来到智慧矿山综管平台",
       welcomeSubtitle: "登录已完成，当前账号已同步到 Pinia 并持久化缓存。刷新页面后，用户信息会自动从缓存恢复。",
       backToLogin: "返回登录页",
       logout: "退出登录",
@@ -28,7 +28,7 @@ const messages = {
   },
   en: {
     common: {
-      appName: "Data Management Platform",
+      appName: "Smart Mine Operations Platform",
       login: "Sign In",
       username: "Username",
       usernamePlaceholder: "Enter username",
@@ -40,7 +40,7 @@ const messages = {
       invalidCredentials: "Invalid username or password.",
       currentUser: "Current user",
       networkError: "Request failed. Please make sure the java-AI service is running.",
-      welcomeTitle: "Welcome to the Smart Mining Dispatch System",
+      welcomeTitle: "Welcome to the Smart Mine Operations Platform",
       welcomeSubtitle: "Your sign-in state is now stored in Pinia and persisted locally. Refreshing the page will restore the cached user information automatically.",
       backToLogin: "Back to Login",
       logout: "Sign Out",
@@ -48,7 +48,7 @@ const messages = {
       switchLanguage: "Switch language",
       welcome: "Unified entry for mining operations",
       copyright:
-        "Copyright © 2024 EACON Mining Technology Co., Ltd. | ICP 2024064024-1 | Public Security 35082302000240",
+        "Copyright © 2024 Smart Mine Technology Platform | ICP 2024064024-1 | Public Security 35082302000240",
     },
   },
 };
