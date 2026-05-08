@@ -18,35 +18,51 @@
         </div>
       </template>
     </EaTablePageWithCurd>
-
-    <EaDialog
+    <template v-if="versionDialogVisible">
+      <EaDialog
+      class="menu-management-version-dialog"
       v-model="versionDialogVisible"
       title="新增菜单版本"
       width="480px"
       destroy-on-close
       append-to-body
     >
-      <EaForm v-model="versionForm" :options="versionFormOptions" :attrs="{ labelPosition: 'top' }" />
+      <EaForm
+        :key="versionFormRenderKey"
+        v-model="versionForm"
+        :options="versionFormOptions"
+        :attrs="{ labelPosition: 'top' }"
+      />
       <template #footer>
-        <EaButton @click="versionDialogVisible = false">取消</EaButton>
-        <EaButton type="primary" :loading="versionSubmitting" @click="submitVersion">确定</EaButton>
+        <div class="menu-management-version-dialog__footer">
+          <EaButton @click="versionDialogVisible = false">取消</EaButton>
+          <EaButton type="primary" :loading="versionSubmitting" @click="submitVersion">确定</EaButton>
+        </div>
       </template>
     </EaDialog>
+    </template>
+
 
     <EaDrawer
+      class="menu-management-menu-drawer"
       v-model="childDrawerVisible"
       title="新增菜单节点"
       size-type="small"
       :loading="childSubmitting"
       @confirm="submitChildMenu"
     >
-      <EaForm v-model="childForm" :options="menuFormOptions" :attrs="{ labelPosition: 'top' }" />
+      <EaForm
+        class="menu-management-menu-form"
+        v-model="childForm"
+        :options="menuFormOptions"
+        :attrs="{ labelPosition: 'top' }"
+      />
     </EaDrawer>
   </section>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, reactive, ref } from "vue";
+import { computed, onMounted, reactive, ref, watch } from "vue";
 import { ElMessage } from "element-plus";
 import type {
   IDetailOption,
@@ -95,8 +111,11 @@ const allMenus = ref<SystemMenu[]>([]);
 const editingMenuCode = ref("");
 const versionDialogVisible = ref(false);
 const childDrawerVisible = ref(false);
+/** 行内「新增」打开抽屉时锁定父级菜单为当前行且不可改 */
+const childDrawerLocksParentMenu = ref(false);
 const versionSubmitting = ref(false);
 const childSubmitting = ref(false);
+const versionFormRenderKey = ref(0);
 
 const description = [
   "按菜单版本维护目录、菜单、按钮、权限编码与 API 绑定。",
@@ -200,36 +219,47 @@ const queryOptions = reactive<IFormOption[]>([
   },
 ]);
 
-const versionFormOptions = reactive<IFormOption[]>([
-  {
-    label: "菜单版本号",
-    prop: "versionCode",
-    itemAttrs: {
-      rules: [
-        { required: true, message: "请输入菜单版本号", trigger: "blur" },
-        {
-          pattern: /^[A-Za-z0-9._-]+$/,
-          message: "仅支持字母、数字、点、短横线、下划线",
-          trigger: "blur",
-        },
-      ],
-    },
-    componentAttrs: {
-      clearable: true,
-      placeholder: "请输入版本号",
-    },
+const versionSelectOptions = computed(() => {
+  const options = getVersionSelectOptions();
+  if (options.length) return options;
+  return [{ label: `${DEFAULT_MENU_VERSION}（默认版本）`, value: DEFAULT_MENU_VERSION }];
+});
+
+const VERSION_FORM_FIRST_OPTION: IFormOption = {
+  label: "菜单版本号",
+  prop: "versionCode",
+  itemAttrs: {
+    rules: [
+      { required: true, message: "请输入菜单版本号", trigger: "blur" },
+      {
+        pattern: /^[A-Za-z0-9._-]+$/,
+        message: "仅支持字母、数字、点、短横线、下划线",
+        trigger: "blur",
+      },
+    ],
   },
+  componentAttrs: {
+    clearable: true,
+    placeholder: "请输入版本号",
+  },
+};
+
+const versionFormOptions = computed<IFormOption[]>(() => [
+  VERSION_FORM_FIRST_OPTION,
   {
     label: "基于版本",
     prop: "baseVersionCode",
     is: "ea-select",
     componentAttrs: {
-      clearable: true,
-      options: [],
-      placeholder: "请选择已存在版本",
+      clearable: false,
+      filterable: false,
+      teleported: true,
+      placeholder: "请选择菜单版本",
+      options: versionSelectOptions.value.map((item) => ({ ...item })),
     },
   },
 ]);
+
 
 const menuFormOptions = reactive<IFormOption[]>([
   {
@@ -254,6 +284,7 @@ const menuFormOptions = reactive<IFormOption[]>([
     label: "父级菜单",
     prop: "parentMenuCode",
     is: "ea-tree-select",
+    disabled: () => childDrawerLocksParentMenu.value,
     componentAttrs: {
       checkStrictly: true,
       clearable: true,
@@ -303,30 +334,6 @@ const menuFormOptions = reactive<IFormOption[]>([
     },
   },
   {
-    label: "路由路径",
-    prop: "routePath",
-    componentAttrs: {
-      clearable: true,
-      placeholder: "例如 /system/menu-management",
-    },
-  },
-  {
-    label: "组件路径",
-    prop: "componentPath",
-    componentAttrs: {
-      clearable: true,
-      placeholder: "例如 @/views/system/menuManagement.vue",
-    },
-  },
-  {
-    label: "图标",
-    prop: "icon",
-    componentAttrs: {
-      clearable: true,
-      placeholder: "例如 grid、setting、user",
-    },
-  },
-  {
     label: "排序",
     prop: "sortNo",
     is: "ea-input",
@@ -336,26 +343,11 @@ const menuFormOptions = reactive<IFormOption[]>([
     },
   },
   {
-    label: "是否显示",
-    prop: "visible",
-    is: "ea-switch",
-    componentAttrs: {
-      activeText: "显示",
-      inactiveText: "隐藏",
-    },
-  },
-  {
-    label: "是否启用",
-    prop: "enabled",
-    is: "ea-switch",
-    componentAttrs: {
-      activeText: "启用",
-      inactiveText: "停用",
-    },
-  },
-  {
     label: "权限编码",
     prop: "permissionCodes",
+    itemAttrs: {
+      class: "menu-management-form-item--wide",
+    },
     componentAttrs: {
       placeholder: "一行一个，或用逗号分隔，例如 system.menu.view",
       rows: 4,
@@ -366,20 +358,15 @@ const menuFormOptions = reactive<IFormOption[]>([
   {
     label: "API 绑定",
     prop: "apiBindings",
+    itemAttrs: {
+      class: "menu-management-form-item--wide",
+    },
     componentAttrs: {
       placeholder: "一行一个，例如 GET /api/system/menus",
       rows: 5,
       type: "textarea",
     },
     size: "large",
-  },
-  {
-    label: "说明",
-    prop: "description",
-    componentAttrs: {
-      clearable: true,
-      placeholder: "请输入说明",
-    },
   },
 ]);
 
@@ -390,14 +377,20 @@ const detailOptions: IDetailOption[] = [
   { label: "菜单编码", prop: "menuCode" },
   { label: "菜单名称", prop: "menuName" },
   { label: "菜单类型", prop: "menuType", componentAttrs: { formatter: getMenuTypeLabel } },
-  { label: "路由路径", prop: "routePath" },
-  { label: "组件路径", prop: "componentPath" },
   { label: "权限编码", prop: "permissionCodes" },
   { label: "API 绑定", prop: "apiBindings" },
-  { label: "说明", prop: "description" },
 ];
 
 const tableOptions: ITableOption[] = [
+  {
+    label: "菜单名称",
+    prop: "menuName",
+    itemAttrs: {
+      fixed: "left",
+      minWidth: 180,
+      showOverflowTooltip: true,
+    },
+  },
   {
     label: "菜单类型",
     prop: "menuType",
@@ -417,11 +410,10 @@ const tableOptions: ITableOption[] = [
     },
   },
   {
-    label: "菜单名称",
-    prop: "menuName",
+    label: "菜单版本",
+    prop: "modelCode",
     itemAttrs: {
-      fixed: "left",
-      minWidth: 180,
+      minWidth: 140,
       showOverflowTooltip: true,
     },
   },
@@ -442,22 +434,6 @@ const tableOptions: ITableOption[] = [
     },
   },
   {
-    label: "路由路径",
-    prop: "routePath",
-    itemAttrs: {
-      minWidth: 220,
-      showOverflowTooltip: true,
-    },
-  },
-  {
-    label: "组件路径",
-    prop: "componentPath",
-    itemAttrs: {
-      minWidth: 260,
-      showOverflowTooltip: true,
-    },
-  },
-  {
     label: "系统名称",
     prop: "systemCode",
     itemAttrs: {
@@ -470,14 +446,6 @@ const tableOptions: ITableOption[] = [
     prop: "sortNo",
     itemAttrs: {
       minWidth: 80,
-    },
-  },
-  {
-    label: "状态",
-    prop: "enabled",
-    itemAttrs: {
-      formatter: (_row, _column, value) => (value ? "启用" : "停用"),
-      minWidth: 90,
     },
   },
 ];
@@ -650,8 +618,6 @@ function filterRows(rows: SystemMenu[], params: Record<string, unknown>) {
       item.parentMenuCode,
       item.permissionCodes,
       item.apiBindings,
-      item.routePath,
-      item.componentPath,
     ]
       .join(" ")
       .toLowerCase()
@@ -729,15 +695,27 @@ function collectDescendantCodes(menuCode: string, systemCode: string, target: Se
 }
 
 function syncVersionOptions() {
-  const options = getVersionSelectOptions();
-  queryOptions[0].componentAttrs = {
-    ...queryOptions[0].componentAttrs,
-    options,
+  const options = versionSelectOptions.value.map((item) => ({ ...item }));
+  queryOptions[0] = {
+    ...queryOptions[0],
+    componentAttrs: {
+      ...queryOptions[0].componentAttrs,
+      options,
+    },
   };
-  versionFormOptions[1].componentAttrs = {
-    ...versionFormOptions[1].componentAttrs,
-    options,
-  };
+}
+
+function setParentMenuFieldLocked(locked: boolean) {
+  childDrawerLocksParentMenu.value = locked;
+  const opt = menuFormOptions.find((o) => o.prop === "parentMenuCode");
+  if (opt?.componentAttrs && typeof opt.componentAttrs === "object") {
+    opt.componentAttrs.clearable = !locked;
+    if (locked) {
+      opt.componentAttrs.placeholder = "由当前行自动带出";
+    } else {
+      opt.componentAttrs.placeholder = "根级菜单可不选";
+    }
+  }
 }
 
 function syncParentMenuOptions(systemCode: string, disabledMenuCode = "") {
@@ -799,9 +777,15 @@ async function loadVersions() {
   }
 }
 
-function openVersionDialog() {
+async function openVersionDialog() {
+  await loadVersions();
   versionForm.versionCode = "";
-  versionForm.baseVersionCode = currentQuery.value.menuVersion;
+  versionForm.baseVersionCode =
+    currentQuery.value.menuVersion ||
+    versionOptions.value.find((item) => item.versionCode === DEFAULT_MENU_VERSION)?.versionCode ||
+    versionOptions.value[0]?.versionCode ||
+    "";
+  versionFormRenderKey.value += 1;
   versionDialogVisible.value = true;
 }
 
@@ -839,6 +823,7 @@ async function openChildDrawer(parent: SystemMenu) {
   editingMenuCode.value = "";
   await ensureMenuCache(parent.modelCode, parent.systemCode);
   syncParentMenuOptions(parent.systemCode);
+  setParentMenuFieldLocked(true);
   Object.assign(
     childForm,
     createEmptyMenuForm({
@@ -858,10 +843,6 @@ async function submitChildMenu() {
   const payload = normalizeMenuForm(childForm);
   if (!payload.menuCode || !payload.menuName) {
     ElMessage.warning("请输入菜单编码和菜单名称");
-    return;
-  }
-  if (payload.menuType === "MENU" && (!payload.routePath || !payload.componentPath)) {
-    ElMessage.warning("菜单类型需填写路由路径和组件路径");
     return;
   }
 
@@ -893,6 +874,12 @@ async function exportMenuVersion() {
   URL.revokeObjectURL(url);
   ElMessage.success("菜单版本已导出");
 }
+
+watch(childDrawerVisible, (open) => {
+  if (!open) {
+    setParentMenuFieldLocked(false);
+  }
+});
 
 onMounted(async () => {
   await loadVersions();
@@ -930,6 +917,27 @@ onMounted(async () => {
   gap: 12px;
 }
 
+.menu-management-page :deep(.TablePageWithCurdDrawerContent),
+.menu-management-page :deep(.menu-management-menu-form) {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 16px;
+  width: 100%;
+  max-width: 100%;
+  padding-right: 0;
+}
+
+.menu-management-page :deep(.TablePageWithCurdDrawerContent .EaconComponentsFormItem),
+.menu-management-page :deep(.menu-management-menu-form .EaconComponentsFormItem) {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.menu-management-page :deep(.TablePageWithCurdDrawerContent .menu-management-form-item--wide),
+.menu-management-page :deep(.menu-management-menu-form .menu-management-form-item--wide) {
+  grid-column: 1 / -1;
+}
+
 .menu-management-page :deep(.EaconComponentsTable .el-table__inner-wrapper .cell) {
   white-space: pre-wrap;
   word-break: break-word;
@@ -942,7 +950,6 @@ onMounted(async () => {
 
 .menu-name-cell,
 .api-cell,
-.route-cell,
 .version-info-cell {
   display: flex;
   min-width: 0;
@@ -955,7 +962,6 @@ onMounted(async () => {
 
 .menu-name-cell-main,
 .api-cell,
-.route-cell,
 .version-info-cell {
   flex-direction: column;
   gap: 2px;
@@ -963,7 +969,6 @@ onMounted(async () => {
 
 .menu-name-cell-main strong,
 .api-cell span,
-.route-cell span,
 .version-info-cell span {
   color: var(--ea-text1);
   font-weight: 600;
@@ -972,7 +977,6 @@ onMounted(async () => {
 
 .menu-name-cell-main span,
 .api-cell small,
-.route-cell small,
 .version-info-cell small {
   color: var(--ea-text3);
   font-size: 12px;
@@ -1005,5 +1009,88 @@ onMounted(async () => {
 .menu-type.is-button {
   color: #475467;
   background: #eef2f6;
+}
+
+.menu-management-version-dialog__footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 20px;
+}
+
+</style>
+
+<style lang="scss">
+/* append-to-body：弹框不透明 + 表单项铺满（与 EaDialog / EaForm 变量一致） */
+.white .menu-management-version-dialog.EaconComponentsDialog {
+  --bg: rgb(248, 251, 255);
+}
+
+.dark .menu-management-version-dialog.EaconComponentsDialog {
+  --bg: rgb(12, 25, 36);
+}
+
+.menu-management-version-dialog .EaconComponentsForm {
+  --ea-form-item-width: 100%;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.menu-management-version-dialog .EaconComponentsFormItem {
+  flex: 1 1 100%;
+  max-width: 100%;
+}
+
+.menu-management-version-dialog .EaconComponentsFormItem .el-form-item__content {
+  width: 100%;
+}
+
+.menu-management-version-dialog .EaconComponentsFormItem .el-form-item__content > .EaconComponentsInput,
+.menu-management-version-dialog .EaconComponentsFormItem .el-form-item__content > .EaconComponentsSelect {
+  width: 100%;
+}
+
+/* 新增版本弹框内「基于版本」下拉：选项文字区域勿被组件库 width:10px 压成不可见；弹出层需在 Dialog 遮罩之上 */
+.menu-management-version-dialog .el-dialog__body {
+  overflow: visible;
+}
+
+.el-popper.EaconComponentsSelectPopper {
+  z-index: 3020 !important;
+}
+
+.el-popper.EaconComponentsSelectPopper .EaconComponentsSelectOptionLabel {
+  width: auto !important;
+  min-width: 0;
+  flex: 1 1 auto !important;
+  color: var(--ea-text1, var(--el-text-color-primary));
+}
+
+/* 新增菜单节点抽屉底部按钮间距（抽屉挂载到 body） */
+.menu-management-menu-drawer .EaconComponentsDrawerFooterButtons {
+  gap: 20px;
+}
+
+.EaconComponentsDrawer .TablePageWithCurdDrawerContent,
+.EaconComponentsDrawer .menu-management-menu-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 16px;
+  width: 100%;
+  max-width: 100%;
+  padding-right: 0;
+}
+
+.EaconComponentsDrawer .TablePageWithCurdDrawerContent .EaconComponentsFormItem,
+.EaconComponentsDrawer .menu-management-menu-form .EaconComponentsFormItem {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.EaconComponentsDrawer .TablePageWithCurdDrawerContent .menu-management-form-item--wide,
+.EaconComponentsDrawer .menu-management-menu-form .menu-management-form-item--wide {
+  grid-column: 1 / -1;
 }
 </style>

@@ -78,6 +78,29 @@ export type SystemMenuListQuery = {
   systemCode?: string;
 };
 
+type ListResponse<T> =
+  | T[]
+  | {
+      content?: T[];
+      data?: T[];
+      list?: T[];
+      records?: T[];
+      rows?: T[];
+    };
+
+function unwrapArrayResponse<T>(response: ListResponse<T>) {
+  if (Array.isArray(response)) return response;
+
+  return (
+    response.data ??
+    response.records ??
+    response.rows ??
+    response.list ??
+    response.content ??
+    []
+  );
+}
+
 function normalizePayload(payload: Partial<SystemMenu>) {
   return {
     apiBindings: String(payload.apiBindings ?? "").trim(),
@@ -141,7 +164,8 @@ export async function fetchSystemMenuDetail(id: number | string) {
 }
 
 export async function fetchSystemMenuVersions() {
-  return apiRequest<SystemMenuVersion[]>("/api/system/menus/versions");
+  const response = await apiRequest<ListResponse<SystemMenuVersion>>("/api/system/menus/versions");
+  return unwrapArrayResponse(response);
 }
 
 export async function createSystemMenuVersion(payload: SystemMenuVersionPayload) {
