@@ -9,6 +9,8 @@ export default defineConfig(({ mode }) => {
     env.VITE_DEVICE_CENTER_PROXY_TARGET || "http://127.0.0.1:8082";
   const dispatchCenterProxyTarget =
     env.VITE_DISPATCH_CENTER_PROXY_TARGET || "http://127.0.0.1:8083";
+  const agentCenterProxyTarget =
+    env.VITE_AGENT_CENTER_PROXY_TARGET || "http://127.0.0.1:8084";
 
   return {
     plugins: [vue()],
@@ -33,6 +35,11 @@ export default defineConfig(({ mode }) => {
           target: dispatchCenterProxyTarget,
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/dispatch-api/, ""),
+        },
+        "/agent-api": {
+          target: agentCenterProxyTarget,
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/agent-api/, ""),
         },
       },
     },

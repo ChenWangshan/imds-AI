@@ -1,0 +1,474 @@
+- generic [ref=e1]:
+  - generic [ref=e61]:
+    - banner [ref=e62]:
+      - generic [ref=e63] [cursor=pointer]:
+        - img "智慧矿山综管平台" [ref=e64]
+        - generic [ref=e66]: 智慧矿山综管平台
+      - generic [ref=e67]:
+        - button [ref=e68] [cursor=pointer]:
+          - img [ref=e71]
+        - button [ref=e73] [cursor=pointer]:
+          - img [ref=e76]
+        - generic [ref=e79] [cursor=pointer]:
+          - generic:
+            - combobox "切换语言" [ref=e81]
+            - generic [ref=e82]: 中文
+          - img [ref=e85]
+        - generic [ref=e88]: C
+        - button "退出" [ref=e89] [cursor=pointer]:
+          - generic [ref=e90]: 退出
+    - generic [ref=e91]:
+      - complementary:
+        - generic:
+          - generic:
+            - generic:
+              - generic:
+                - menubar:
+                  - menuitem "首页":
+                    - generic:
+                      - generic:
+                        - img
+                      - generic: 首页
+                  - menuitem "Agent 工作台":
+                    - generic:
+                      - generic:
+                        - generic:
+                          - img
+                        - generic: Agent 工作台
+                      - generic:
+                        - img
+                  - menuitem "智能调度":
+                    - generic:
+                      - generic:
+                        - generic:
+                          - img
+                        - generic: 智能调度
+                      - generic:
+                        - img
+                  - menuitem "生产管理":
+                    - generic:
+                      - generic:
+                        - generic:
+                          - img
+                        - generic: 生产管理
+                      - generic:
+                        - img
+                  - menuitem "设备管理":
+                    - generic:
+                      - generic:
+                        - generic:
+                          - img
+                        - generic: 设备管理
+                      - generic:
+                        - img
+                  - menuitem "系统管理" [expanded]:
+                    - generic:
+                      - generic:
+                        - generic:
+                          - img
+                        - generic: 系统管理
+                      - generic:
+                        - img
+                    - menu:
+                      - menuitem "用户管理":
+                        - generic:
+                          - generic:
+                            - img
+                          - generic: 用户管理
+                      - menuitem "字典管理":
+                        - generic:
+                          - generic:
+                            - img
+                          - generic: 字典管理
+                      - menuitem "矿区管理":
+                        - generic:
+                          - generic:
+                            - img
+                          - generic: 矿区管理
+                      - menuitem "菜单管理":
+                        - generic:
+                          - generic:
+                            - img
+                          - generic: 菜单管理
+                      - menuitem "国际化配置":
+                        - generic:
+                          - generic:
+                            - img
+                          - generic: 国际化配置
+      - generic [ref=e150]:
+        - generic [ref=e151]:
+          - generic [ref=e152]:
+            - img [ref=e153]
+            - text: 菜单管理
+            - img [ref=e155] [cursor=pointer]
+          - button "新增" [ref=e158] [cursor=pointer]:
+            - generic [ref=e159]: 新增
+        - generic [ref=e161]:
+          - generic [ref=e164]:
+            - generic [ref=e165]:
+              - generic [ref=e166]: 关键字
+              - textbox "关键字" [ref=e170]:
+                - /placeholder: 菜单名称 / 编码 / 权限 / API
+            - generic [ref=e171]:
+              - generic [ref=e172]: 模型编码
+              - textbox "模型编码" [ref=e176]:
+                - /placeholder: imds-auth-draft
+                - text: imds-auth-draft
+            - generic [ref=e177]:
+              - generic [ref=e178]: 模型状态
+              - generic [ref=e181]:
+                - generic [ref=e182]:
+                  - combobox "模型状态" [ref=e184]
+                  - generic [ref=e185]: 请选择模型状态
+                - img [ref=e188] [cursor=pointer]
+            - generic [ref=e190]:
+              - generic [ref=e191]: 适用系统
+              - generic [ref=e194]:
+                - generic [ref=e195]:
+                  - combobox "适用系统" [ref=e197]
+                  - generic [ref=e198]: 一体化平台
+                - img [ref=e201] [cursor=pointer]
+            - generic [ref=e203]:
+              - generic [ref=e204]: 菜单类型
+              - generic [ref=e207]:
+                - generic [ref=e208]:
+                  - combobox "菜单类型" [ref=e210]
+                  - generic [ref=e211]: 请选择菜单类型
+                - img [ref=e214] [cursor=pointer]
+            - generic [ref=e218]:
+              - button "查询" [ref=e219] [cursor=pointer]:
+                - generic [ref=e220]:
+                  - img [ref=e221]
+                  - text: 查询
+              - button "重置" [ref=e223] [cursor=pointer]:
+                - generic [ref=e224]:
+                  - img [ref=e225]
+                  - text: 重置
+          - generic [ref=e230]:
+            - table [ref=e232]:
+              - rowgroup [ref=e249]:
+                - row "序号 菜单名称 菜单编码 父级编码 类型 模型编码 模型状态 适用系统 路由 权限编码 API 绑定 排序 显示 启用 操作" [ref=e250]:
+                  - columnheader "序号" [ref=e251]:
+                    - generic [ref=e252]: 序号
+                  - columnheader "菜单名称" [ref=e253]:
+                    - generic [ref=e254]: 菜单名称
+                  - columnheader "菜单编码" [ref=e255]:
+                    - generic [ref=e256]: 菜单编码
+                  - columnheader "父级编码" [ref=e257]:
+                    - generic [ref=e258]: 父级编码
+                  - columnheader "类型" [ref=e259]:
+                    - generic [ref=e260]: 类型
+                  - columnheader "模型编码" [ref=e261]:
+                    - generic [ref=e262]: 模型编码
+                  - columnheader "模型状态" [ref=e263]:
+                    - generic [ref=e264]: 模型状态
+                  - columnheader "适用系统" [ref=e265]:
+                    - generic [ref=e266]: 适用系统
+                  - columnheader "路由" [ref=e267]:
+                    - generic [ref=e268]: 路由
+                  - columnheader "权限编码" [ref=e269]:
+                    - generic [ref=e270]: 权限编码
+                  - columnheader "API 绑定" [ref=e271]:
+                    - generic [ref=e272]: API 绑定
+                  - columnheader "排序" [ref=e273]:
+                    - generic [ref=e274]: 排序
+                  - columnheader "显示" [ref=e275]:
+                    - generic [ref=e276]: 显示
+                  - columnheader "启用" [ref=e277]:
+                    - generic [ref=e278]: 启用
+                  - columnheader "操作" [ref=e279]:
+                    - generic [ref=e280]: 操作
+            - table [ref=e285]:
+              - rowgroup [ref=e302]:
+                - row "1 首页 home -- 菜单 imds-auth-draft 草稿 一体化平台 /home home.view GET /api/profile 10 是 是 详情 编辑 删除" [ref=e303]:
+                  - cell "1" [ref=e304]:
+                    - generic [ref=e306]: "1"
+                  - cell "首页" [ref=e307]:
+                    - generic [ref=e309]: 首页
+                  - cell "home" [ref=e310]:
+                    - generic [ref=e312]: home
+                  - cell "--" [ref=e313]:
+                    - generic [ref=e315]: "--"
+                  - cell "菜单" [ref=e316]:
+                    - generic [ref=e318]: 菜单
+                  - cell "imds-auth-draft" [ref=e319]:
+                    - generic [ref=e321]: imds-auth-draft
+                  - cell "草稿" [ref=e322]:
+                    - generic [ref=e324]: 草稿
+                  - cell "一体化平台" [ref=e325]:
+                    - generic [ref=e327]: 一体化平台
+                  - cell "/home" [ref=e328]:
+                    - generic [ref=e330]: /home
+                  - cell "home.view" [ref=e331]:
+                    - generic [ref=e333]: home.view
+                  - cell "GET /api/profile" [ref=e334]:
+                    - generic [ref=e336]: GET /api/profile
+                  - cell "10" [ref=e337]:
+                    - generic [ref=e339]: "10"
+                  - cell "是" [ref=e340]:
+                    - generic [ref=e342]: 是
+                  - cell "是" [ref=e343]:
+                    - generic [ref=e345]: 是
+                  - cell "详情 编辑 删除" [ref=e346]:
+                    - generic [ref=e348]:
+                      - generic [ref=e349] [cursor=pointer]: 详情
+                      - generic [ref=e350] [cursor=pointer]: 编辑
+                      - generic [ref=e351] [cursor=pointer]: 删除
+                - row "2 系统管理 system -- 目录 imds-auth-draft 草稿 一体化平台 /system system.view -- 900 是 是 详情 编辑 删除" [ref=e352]:
+                  - cell "2" [ref=e353]:
+                    - generic [ref=e355]: "2"
+                  - cell "系统管理" [ref=e356]:
+                    - generic [ref=e358]: 系统管理
+                  - cell "system" [ref=e359]:
+                    - generic [ref=e361]: system
+                  - cell "--" [ref=e362]:
+                    - generic [ref=e364]: "--"
+                  - cell "目录" [ref=e365]:
+                    - generic [ref=e367]: 目录
+                  - cell "imds-auth-draft" [ref=e368]:
+                    - generic [ref=e370]: imds-auth-draft
+                  - cell "草稿" [ref=e371]:
+                    - generic [ref=e373]: 草稿
+                  - cell "一体化平台" [ref=e374]:
+                    - generic [ref=e376]: 一体化平台
+                  - cell "/system" [ref=e377]:
+                    - generic [ref=e379]: /system
+                  - cell "system.view" [ref=e380]:
+                    - generic [ref=e382]: system.view
+                  - cell "--" [ref=e383]:
+                    - generic [ref=e385]: "--"
+                  - cell "900" [ref=e386]:
+                    - generic [ref=e388]: "900"
+                  - cell "是" [ref=e389]:
+                    - generic [ref=e391]: 是
+                  - cell "是" [ref=e392]:
+                    - generic [ref=e394]: 是
+                  - cell "详情 编辑 删除" [ref=e395]:
+                    - generic [ref=e397]:
+                      - generic [ref=e398] [cursor=pointer]: 详情
+                      - generic [ref=e399] [cursor=pointer]: 编辑
+                      - generic [ref=e400] [cursor=pointer]: 删除
+                - 'row "3 用户管理 system.user system 菜单 imds-auth-draft 草稿 一体化平台 /system/user system.user.view,system.user.create,system.user.update,system.user.delete GET /api/users POST /api/users PUT /api/users/{id} DELETE /api/users/{id} 910 是 是 详情 编辑 删除" [ref=e401]':
+                  - cell "3" [ref=e402]:
+                    - generic [ref=e404]: "3"
+                  - cell "用户管理" [ref=e405]:
+                    - generic [ref=e407]: 用户管理
+                  - cell "system.user" [ref=e408]:
+                    - generic [ref=e410]: system.user
+                  - cell "system" [ref=e411]:
+                    - generic [ref=e413]: system
+                  - cell "菜单" [ref=e414]:
+                    - generic [ref=e416]: 菜单
+                  - cell "imds-auth-draft" [ref=e417]:
+                    - generic [ref=e419]: imds-auth-draft
+                  - cell "草稿" [ref=e420]:
+                    - generic [ref=e422]: 草稿
+                  - cell "一体化平台" [ref=e423]:
+                    - generic [ref=e425]: 一体化平台
+                  - cell "/system/user" [ref=e426]:
+                    - generic [ref=e428]: /system/user
+                  - cell "system.user.view,system.user.create,system.user.update,system.user.delete" [ref=e429]:
+                    - generic [ref=e431]: system.user.view,system.user.create,system.user.update,system.user.delete
+                  - 'cell "GET /api/users POST /api/users PUT /api/users/{id} DELETE /api/users/{id}" [ref=e432]':
+                    - generic [ref=e434]: "GET /api/users POST /api/users PUT /api/users/{id} DELETE /api/users/{id}"
+                  - cell "910" [ref=e435]:
+                    - generic [ref=e437]: "910"
+                  - cell "是" [ref=e438]:
+                    - generic [ref=e440]: 是
+                  - cell "是" [ref=e441]:
+                    - generic [ref=e443]: 是
+                  - cell "详情 编辑 删除" [ref=e444]:
+                    - generic [ref=e446]:
+                      - generic [ref=e447] [cursor=pointer]: 详情
+                      - generic [ref=e448] [cursor=pointer]: 编辑
+                      - generic [ref=e449] [cursor=pointer]: 删除
+                - 'row "4 菜单管理 system.menu system 菜单 imds-auth-draft 草稿 一体化平台 /system/menu-management system.menu.view,system.menu.create,system.menu.update,system.menu.delete GET /api/system/menus GET /api/system/menus/all POST /api/system/menus PUT /api/system/menus/{id} DELETE /api/system/menus/{id} 940 是 是 详情 编辑 删除" [ref=e450]':
+                  - cell "4" [ref=e451]:
+                    - generic [ref=e453]: "4"
+                  - cell "菜单管理" [ref=e454]:
+                    - generic [ref=e456]: 菜单管理
+                  - cell "system.menu" [ref=e457]:
+                    - generic [ref=e459]: system.menu
+                  - cell "system" [ref=e460]:
+                    - generic [ref=e462]: system
+                  - cell "菜单" [ref=e463]:
+                    - generic [ref=e465]: 菜单
+                  - cell "imds-auth-draft" [ref=e466]:
+                    - generic [ref=e468]: imds-auth-draft
+                  - cell "草稿" [ref=e469]:
+                    - generic [ref=e471]: 草稿
+                  - cell "一体化平台" [ref=e472]:
+                    - generic [ref=e474]: 一体化平台
+                  - cell "/system/menu-management" [ref=e475]:
+                    - generic [ref=e477]: /system/menu-management
+                  - cell "system.menu.view,system.menu.create,system.menu.update,system.menu.delete" [ref=e478]:
+                    - generic [ref=e480]: system.menu.view,system.menu.create,system.menu.update,system.menu.delete
+                  - 'cell "GET /api/system/menus GET /api/system/menus/all POST /api/system/menus PUT /api/system/menus/{id} DELETE /api/system/menus/{id}" [ref=e481]':
+                    - generic [ref=e483]: "GET /api/system/menus GET /api/system/menus/all POST /api/system/menus PUT /api/system/menus/{id} DELETE /api/system/menus/{id}"
+                  - cell "940" [ref=e484]:
+                    - generic [ref=e486]: "940"
+                  - cell "是" [ref=e487]:
+                    - generic [ref=e489]: 是
+                  - cell "是" [ref=e490]:
+                    - generic [ref=e492]: 是
+                  - cell "详情 编辑 删除" [ref=e493]:
+                    - generic [ref=e495]:
+                      - generic [ref=e496] [cursor=pointer]: 详情
+                      - generic [ref=e497] [cursor=pointer]: 编辑
+                      - generic [ref=e498] [cursor=pointer]: 删除
+                - 'row "5 国际化配置 system.i18n system 菜单 imds-auth-draft 草稿 一体化平台 /system/i18n-config system.i18n.view,system.i18n.create,system.i18n.update,system.i18n.delete GET /api/i18n/configs GET /api/i18n/configs/all POST /api/i18n/configs PUT /api/i18n/configs/{id} DELETE /api/i18n/configs/{id} 950 是 是 详情 编辑 删除" [ref=e499]':
+                  - cell "5" [ref=e500]:
+                    - generic [ref=e502]: "5"
+                  - cell "国际化配置" [ref=e503]:
+                    - generic [ref=e505]: 国际化配置
+                  - cell "system.i18n" [ref=e506]:
+                    - generic [ref=e508]: system.i18n
+                  - cell "system" [ref=e509]:
+                    - generic [ref=e511]: system
+                  - cell "菜单" [ref=e512]:
+                    - generic [ref=e514]: 菜单
+                  - cell "imds-auth-draft" [ref=e515]:
+                    - generic [ref=e517]: imds-auth-draft
+                  - cell "草稿" [ref=e518]:
+                    - generic [ref=e520]: 草稿
+                  - cell "一体化平台" [ref=e521]:
+                    - generic [ref=e523]: 一体化平台
+                  - cell "/system/i18n-config" [ref=e524]:
+                    - generic [ref=e526]: /system/i18n-config
+                  - cell "system.i18n.view,system.i18n.create,system.i18n.update,system.i18n.delete" [ref=e527]:
+                    - generic [ref=e529]: system.i18n.view,system.i18n.create,system.i18n.update,system.i18n.delete
+                  - 'cell "GET /api/i18n/configs GET /api/i18n/configs/all POST /api/i18n/configs PUT /api/i18n/configs/{id} DELETE /api/i18n/configs/{id}" [ref=e530]':
+                    - generic [ref=e532]: "GET /api/i18n/configs GET /api/i18n/configs/all POST /api/i18n/configs PUT /api/i18n/configs/{id} DELETE /api/i18n/configs/{id}"
+                  - cell "950" [ref=e533]:
+                    - generic [ref=e535]: "950"
+                  - cell "是" [ref=e536]:
+                    - generic [ref=e538]: 是
+                  - cell "是" [ref=e539]:
+                    - generic [ref=e541]: 是
+                  - cell "详情 编辑 删除" [ref=e542]:
+                    - generic [ref=e544]:
+                      - generic [ref=e545] [cursor=pointer]: 详情
+                      - generic [ref=e546] [cursor=pointer]: 编辑
+                      - generic [ref=e547] [cursor=pointer]: 删除
+          - generic [ref=e554]:
+            - generic [ref=e555]: 共 5 条
+            - generic [ref=e558] [cursor=pointer]:
+              - generic:
+                - combobox [ref=e560]
+                - generic [ref=e561]: 20条/页
+              - img [ref=e564]
+            - button "上一页" [disabled] [ref=e566]:
+              - generic:
+                - img
+            - list [ref=e567]:
+              - listitem "第 1 页" [ref=e568]: "1"
+            - button "下一页" [disabled] [ref=e569]:
+              - generic:
+                - img
+            - generic [ref=e570]:
+              - generic [ref=e571]: 前往
+              - spinbutton "页" [ref=e574]: "1"
+              - generic [ref=e575]: 页
+  - dialog "新增菜单管理" [ref=e577]:
+    - generic [ref=e579]:
+      - generic [ref=e580]:
+        - generic [ref=e581]:
+          - img [ref=e582]
+          - generic [ref=e585]: 新增菜单管理
+        - img [ref=e586] [cursor=pointer]
+      - generic [ref=e592]:
+        - generic [ref=e593]:
+          - generic [ref=e594]: "* 模型编码"
+          - textbox "* 模型编码" [ref=e598]:
+            - /placeholder: imds-auth-draft
+            - text: imds-auth-draft
+        - generic [ref=e599]:
+          - generic [ref=e600]: "* 模型名称"
+          - generic [ref=e603]:
+            - textbox "* 模型名称" [ref=e604]:
+              - /placeholder: IMDS 权限模型草稿
+              - text: IMDS 权限模型草稿
+            - img [ref=e607] [cursor=pointer]
+        - generic [ref=e610]:
+          - generic [ref=e611]: 模型版本
+          - textbox "模型版本" [ref=e615]:
+            - /placeholder: 草稿阶段可为空，例如 V3.6.0-auth.001
+        - generic [ref=e616]:
+          - generic [ref=e617]: "* 模型状态"
+          - generic [ref=e620]:
+            - generic [ref=e621]:
+              - combobox "* 模型状态" [ref=e623]
+              - generic [ref=e624]: 草稿
+            - img [ref=e627] [cursor=pointer]
+        - generic [ref=e629]:
+          - generic [ref=e630]: "* 适用系统"
+          - generic [ref=e633]:
+            - generic [ref=e634]:
+              - combobox "* 适用系统" [ref=e636]
+              - generic [ref=e637]: 一体化平台
+            - img [ref=e640] [cursor=pointer]
+        - generic [ref=e642]:
+          - generic [ref=e643]: 父级菜单
+          - generic [ref=e646]:
+            - generic [ref=e647]:
+              - combobox "父级菜单" [ref=e649]
+              - generic [ref=e650]: 根级菜单可不选
+            - img [ref=e653] [cursor=pointer]
+        - generic [ref=e655]:
+          - generic [ref=e656]: "* 菜单编码"
+          - textbox "* 菜单编码" [ref=e660]:
+            - /placeholder: 例如 system.menu
+        - generic [ref=e661]:
+          - generic [ref=e662]: "* 菜单名称"
+          - textbox "* 菜单名称" [ref=e666]:
+            - /placeholder: 请输入菜单名称
+        - generic [ref=e667]:
+          - generic [ref=e668]: "* 菜单类型"
+          - generic [ref=e671]:
+            - generic [ref=e672]:
+              - combobox "* 菜单类型" [ref=e674]
+              - generic [ref=e675]: 菜单
+            - img [ref=e678] [cursor=pointer]
+        - generic [ref=e680]:
+          - generic [ref=e681]: 路由路径
+          - textbox "路由路径" [ref=e685]:
+            - /placeholder: 例如 /system/menu-management
+        - generic [ref=e686]:
+          - generic [ref=e687]: 组件路径
+          - textbox "组件路径" [ref=e691]:
+            - /placeholder: 例如 @/views/system/menuManagement.vue
+        - generic [ref=e692]:
+          - generic [ref=e693]: 图标
+          - textbox "图标" [ref=e697]:
+            - /placeholder: 例如 grid、setting、user
+        - group "排序" [ref=e698]:
+          - generic [ref=e699]: 排序
+        - generic [ref=e700]:
+          - generic [ref=e701]: 是否显示
+          - generic [ref=e703]:
+            - switch "是否显示" [checked]
+            - generic [ref=e705] [cursor=pointer]: 隐藏
+            - generic [ref=e709] [cursor=pointer]: 显示
+        - generic [ref=e710]:
+          - generic [ref=e711]: 是否启用
+          - generic [ref=e713]:
+            - switch "是否启用" [checked]
+            - generic [ref=e715] [cursor=pointer]: 停用
+            - generic [ref=e719] [cursor=pointer]: 启用
+        - generic [ref=e720]:
+          - generic [ref=e721]: 权限编码
+          - textbox "权限编码" [ref=e724]:
+            - /placeholder: 一行一个，或用逗号分隔，例如 system.menu.view
+        - generic [ref=e725]:
+          - generic [ref=e726]: API 绑定
+          - textbox "API 绑定" [ref=e729]:
+            - /placeholder: 一行一个，例如 GET /api/system/menus
+        - generic [ref=e730]:
+          - generic [ref=e731]: 说明
+          - textbox "说明" [ref=e735]:
+            - /placeholder: 请输入说明
+      - generic [ref=e738]:
+        - button "取消" [ref=e739] [cursor=pointer]:
+          - generic [ref=e740]: 取消
+        - button "确定" [ref=e741] [cursor=pointer]:
+          - generic [ref=e742]: 确定

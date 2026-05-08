@@ -1,20 +1,20 @@
 <template>
   <header class="login-header">
     <div class="login-header__left">
-      <img class="login-header__logo" :src="faviconSrc" alt="智慧矿山综管平台" />
+      <img class="login-header__logo" :src="faviconSrc" :alt="t('common.appName')" />
       <div class="login-header__divider" />
       <div class="login-header__title">{{ t("common.appName") }}</div>
     </div>
     <div class="login-header__right">
-      <el-select
+      <EaSelect
         :model-value="store.language"
         class="login-header__select"
+        :clearable="false"
+        :filterable="false"
+        :options="languageOptions"
         size="large"
         @change="handleLanguageChange"
-      >
-        <el-option label="中文" value="zh" />
-        <el-option label="English" value="en" />
-      </el-select>
+      />
       <el-button
         circle
         class="login-header__theme"
@@ -34,6 +34,7 @@ import { Moon, Sunny } from "@element-plus/icons-vue";
 import { useI18n } from "vue-i18n";
 
 import i18n from "@/i18n";
+import { languageOptions } from "@/i18n";
 import { useGlobalStore, type AppLanguage } from "@/stores/modules/global";
 
 const { t } = useI18n();

@@ -3,15 +3,15 @@
     <section class="home-hero">
       <div class="home-hero__content">
         <p class="home-hero__eyebrow">SMART MINE INTELLIGENCE HUB</p>
-        <h1>智慧矿山中枢</h1>
+        <h1>{{ t("home.title") }}</h1>
         <p class="home-hero__desc">
-          统一承接矿山现场的采装、运输与管理链路，用更清晰的视图组织关键能力。
+          {{ t("home.subtitle") }}
         </p>
 
         <div class="home-hero__signature">
-          <span>当前用户 {{ authStore.currentUser?.username || "-" }}</span>
+          <span>{{ t("common.currentUser") }} {{ authStore.currentUser?.username || "-" }}</span>
           <i />
-          <span>系统在线运行</span>
+          <span>{{ t("common.systemOnline") }}</span>
         </div>
       </div>
 
@@ -106,8 +106,10 @@
 </template>
 
 <script setup lang="ts">
+import { useI18n } from "vue-i18n";
 import { useAuthStore } from "@/stores/modules/auth";
 
+const { t } = useI18n();
 const authStore = useAuthStore();
 </script>
 

@@ -1,0 +1,90 @@
+- generic [ref=e61]:
+  - banner [ref=e62]:
+    - generic [ref=e63] [cursor=pointer]:
+      - img "智慧矿山综管平台" [ref=e64]
+      - generic [ref=e66]: 智慧矿山综管平台
+    - generic [ref=e67]:
+      - button [ref=e68] [cursor=pointer]:
+        - img [ref=e71]
+      - button [ref=e73] [cursor=pointer]:
+        - img [ref=e76]
+      - generic [ref=e79] [cursor=pointer]:
+        - generic:
+          - combobox "切换语言" [ref=e81]
+          - generic [ref=e82]: 中文
+        - img [ref=e85]
+      - generic [ref=e88]: C
+      - button "退出" [ref=e89] [cursor=pointer]:
+        - generic [ref=e90]: 退出
+  - generic [ref=e91]:
+    - complementary:
+      - generic:
+        - generic:
+          - generic:
+            - generic:
+              - menubar:
+                - menuitem "首页":
+                  - generic:
+                    - generic:
+                      - img
+                    - generic: 首页
+                - menuitem "Agent 工作台":
+                  - generic:
+                    - generic:
+                      - generic:
+                        - img
+                      - generic: Agent 工作台
+                    - generic:
+                      - img
+                - menuitem "智能调度":
+                  - generic:
+                    - generic:
+                      - generic:
+                        - img
+                      - generic: 智能调度
+                    - generic:
+                      - img
+                - menuitem "生产管理":
+                  - generic:
+                    - generic:
+                      - generic:
+                        - img
+                      - generic: 生产管理
+                    - generic:
+                      - img
+                - menuitem "设备管理":
+                  - generic:
+                    - generic:
+                      - generic:
+                        - img
+                      - generic: 设备管理
+                    - generic:
+                      - img
+                - menuitem "系统管理":
+                  - generic:
+                    - generic:
+                      - generic:
+                        - img
+                      - generic: 系统管理
+                    - generic:
+                      - img
+    - generic [ref=e94]:
+      - generic [ref=e95]:
+        - generic [ref=e96]:
+          - paragraph [ref=e97]: SMART MINE INTELLIGENCE HUB
+          - heading "智慧矿山中枢" [level=1] [ref=e98]
+          - paragraph [ref=e99]: 统一承接矿山现场的采装、运输与管理链路，用更清晰的视图组织关键能力。
+          - generic [ref=e100]:
+            - generic [ref=e101]: 当前登录用户 chenwangshan
+            - generic [ref=e103]: 系统在线运行
+        - img [ref=e105]
+      - generic [ref=e136]:
+        - article [ref=e137]:
+          - generic [ref=e138]: 场景聚焦
+          - strong [ref=e139]: 采 · 运 · 管
+        - article [ref=e140]:
+          - generic [ref=e141]: 统一入口
+          - strong [ref=e142]: 设备 / 系统 / 组织
+        - article [ref=e143]:
+          - generic [ref=e144]: 平台定位
+          - strong [ref=e145]: 智慧矿山门面

@@ -13,8 +13,10 @@
         <div class="app-layout__menu-shell">
           <el-scrollbar class="app-layout__menu-scrollbar">
             <el-menu
+              ref="menuRef"
               :default-active="activeMenuPath"
               :default-openeds="openedMenus"
+              :unique-opened="true"
               class="layout-menu"
               router
             >
@@ -38,37 +40,112 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, nextTick, ref, watch } from "vue";
 import { RouterView, useRoute, useRouter } from "vue-router";
+import type { RouteRecordRaw } from "vue-router";
 
 import { useGlobalStore } from "@/stores/modules/global";
 import LayoutsHeader from "./layoutsHeader.vue";
 import LayoutsMenuItem from "./layoutsMenuItem.vue";
 
+const HOME_PATH = "/home";
+
 const route = useRoute();
 const router = useRouter();
 const globalStore = useGlobalStore();
+const menuRef = ref<{ open: (index: string) => void; close: (index: string) => void } | null>(
+  null,
+);
+
+type MenuMatch = {
+  activePath: string;
+  openPaths: string[];
+};
 
 const menuRoutes = computed(() => {
   const rootRoute = router.options.routes.find((item) => item.path === "/");
   return rootRoute?.children?.filter((item) => item.meta?.menu !== false) ?? [];
 });
 
-const activeMenuPath = computed(() => {
-  if (route.path.startsWith("/system")) {
-    return route.path;
-  }
+const allSubMenuPaths = computed(() => collectSubMenuPaths(menuRoutes.value));
 
-  return route.path;
-});
+const currentMenuMatch = computed(
+  () => findMenuMatch(menuRoutes.value, route.path) ?? findMenuMatch(menuRoutes.value, HOME_PATH),
+);
+
+const activeMenuPath = computed(() => currentMenuMatch.value?.activePath ?? HOME_PATH);
 
 const openedMenus = computed(() => {
   if (globalStore.menuCollapsed) {
     return [];
   }
 
-  return menuRoutes.value.filter((item) => item.children?.length).map((item) => item.path);
+  return currentMenuMatch.value?.openPaths ?? [];
 });
+
+function collectSubMenuPaths(routes: RouteRecordRaw[]) {
+  return routes.reduce<string[]>((paths, item) => {
+    if (item.meta?.menu === false) {
+      return paths;
+    }
+
+    if (item.children?.length) {
+      paths.push(item.path, ...collectSubMenuPaths(item.children));
+    }
+
+    return paths;
+  }, []);
+}
+
+function findMenuMatch(
+  routes: RouteRecordRaw[],
+  targetPath: string,
+  parentPaths: string[] = [],
+): MenuMatch | null {
+  for (const item of routes) {
+    if (item.meta?.menu === false) {
+      continue;
+    }
+
+    if (item.path === targetPath) {
+      return {
+        activePath: item.path,
+        openPaths: parentPaths,
+      };
+    }
+
+    if (item.children?.length) {
+      const childMatch = findMenuMatch(item.children, targetPath, [...parentPaths, item.path]);
+      if (childMatch) {
+        return childMatch;
+      }
+    }
+  }
+
+  return null;
+}
+
+async function syncOpenedMenus(openPaths: string[]) {
+  await nextTick();
+
+  const menu = menuRef.value;
+  if (!menu) {
+    return;
+  }
+
+  const openPathSet = new Set(openPaths);
+  allSubMenuPaths.value.forEach((path) => {
+    if (!openPathSet.has(path)) {
+      menu.close(path);
+    }
+  });
+
+  openPaths.forEach((path) => {
+    menu.open(path);
+  });
+}
+
+watch(openedMenus, syncOpenedMenus, { immediate: true });
 </script>
 
 <style scoped lang="scss">

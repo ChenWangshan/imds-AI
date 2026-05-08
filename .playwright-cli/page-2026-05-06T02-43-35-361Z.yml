@@ -1,0 +1,36 @@
+- generic [ref=e3]:
+  - banner [ref=e6]:
+    - generic [ref=e7]:
+      - img "智慧矿山综管平台" [ref=e8]
+      - generic [ref=e10]: 智慧矿山综管平台
+    - generic [ref=e11]:
+      - generic [ref=e13] [cursor=pointer]:
+        - generic:
+          - combobox [ref=e15]
+          - generic [ref=e16]: 中文
+        - img [ref=e19]
+      - button [ref=e21] [cursor=pointer]:
+        - img [ref=e24]
+  - main [ref=e26]:
+    - generic [ref=e27]:
+      - paragraph [ref=e28]: SMART MINE INTEGRATED PLATFORM
+      - heading "智慧矿山综管平台" [level=1] [ref=e29]
+      - paragraph [ref=e30]: 矿山业务统一入口
+    - generic [ref=e31]:
+      - generic [ref=e33]: EACON ACCESS
+      - generic [ref=e34]:
+        - generic [ref=e35]:
+          - generic [ref=e36]: "*用户名"
+          - textbox "*用户名" [ref=e40]:
+            - /placeholder: 请输入用户名
+        - generic [ref=e41]:
+          - generic [ref=e42]: "*密码"
+          - textbox "*密码" [ref=e46]:
+            - /placeholder: 请输入密码
+        - generic [ref=e49] [cursor=pointer]:
+          - generic [ref=e50]:
+            - checkbox "我已阅读并同意 《隐私协议》" [checked]
+          - generic [ref=e52]: 我已阅读并同意 《隐私协议》
+        - button "登录" [ref=e53] [cursor=pointer]:
+          - generic [ref=e54]: 登录
+  - contentinfo [ref=e55]: ©2024 易控智驾科技股份有限公司 闽ICP备2024064024号-1 闽公网安备35082302000240号

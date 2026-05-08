@@ -1,9 +1,9 @@
 <template>
   <header class="layouts-header">
     <div class="layouts-header__brand" @click="router.push('/home')">
-      <img class="layouts-header__logo" :src="brandLogoSrc" alt="智慧矿山综管平台" />
+      <img class="layouts-header__logo" :src="brandLogoSrc" :alt="t('common.appName')" />
       <div class="layouts-header__divider" />
-      <div class="layouts-header__title">智慧矿山综管平台</div>
+      <div class="layouts-header__title">{{ t("common.appName") }}</div>
     </div>
 
     <div class="layouts-header__actions">
@@ -17,11 +17,21 @@
         <el-icon v-else><Moon /></el-icon>
       </el-button>
 
+      <EaSelect
+        :model-value="globalStore.language"
+        class="layouts-header__language"
+        :aria-label="t('common.switchLanguage')"
+        :clearable="false"
+        :filterable="false"
+        :options="languageOptions"
+        @change="handleLanguageChange"
+      />
+
       <div class="layouts-header__avatar">
         <span>{{ (authStore.currentUser?.username || "U").slice(0, 1).toUpperCase() }}</span>
       </div>
 
-      <el-button class="layouts-header__logout" @click="handleLogout">退出</el-button>
+      <el-button class="layouts-header__logout" @click="handleLogout">{{ t("common.logout") }}</el-button>
     </div>
   </header>
 </template>
@@ -30,11 +40,14 @@
 import { computed } from "vue";
 import { Expand, Fold, Moon, Sunny } from "@element-plus/icons-vue";
 import { useRouter } from "vue-router";
+import { useI18n } from "vue-i18n";
 
+import { languageOptions, type I18nLanguage } from "@/i18n";
 import { useAuthStore } from "@/stores/modules/auth";
 import { useGlobalStore } from "@/stores/modules/global";
 
 const router = useRouter();
+const { t } = useI18n();
 const authStore = useAuthStore();
 const globalStore = useGlobalStore();
 const brandLogoSrc = computed(() => (globalStore.isDark ? "/brand-logo.svg" : "/brand-logo-light.svg"));
@@ -42,6 +55,10 @@ const brandLogoSrc = computed(() => (globalStore.isDark ? "/brand-logo.svg" : "/
 function handleLogout() {
   authStore.logout();
   router.replace("/login");
+}
+
+function handleLanguageChange(language: I18nLanguage) {
+  globalStore.setLanguage(language);
 }
 </script>
 
@@ -93,6 +110,10 @@ function handleLogout() {
 
 .layouts-header__actions {
   gap: 16px;
+}
+
+.layouts-header__language {
+  width: 128px;
 }
 
 .layouts-header__action {
