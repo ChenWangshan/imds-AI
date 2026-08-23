@@ -36,6 +36,8 @@
         </div>
       </section>
     </div>
+
+    <AgentFloatingChat />
   </div>
 </template>
 
@@ -45,6 +47,7 @@ import { RouterView, useRoute, useRouter } from "vue-router";
 import type { RouteRecordRaw } from "vue-router";
 
 import { useGlobalStore } from "@/stores/modules/global";
+import AgentFloatingChat from "@/components/AgentFloatingChat/AgentFloatingChat.vue";
 import LayoutsHeader from "./layoutsHeader.vue";
 import LayoutsMenuItem from "./layoutsMenuItem.vue";
 
@@ -204,7 +207,7 @@ watch(openedMenus, syncOpenedMenus, { immediate: true });
 .app-layout__main-shell {
   border: 1px solid var(--app-shell-border);
   border-radius: 16px;
-  background: var(--app-shell-bg);
+  background: var(--app-menu-bg);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.05),
     0 0 0 1px var(--app-shell-ring);

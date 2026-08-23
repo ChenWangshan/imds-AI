@@ -16,6 +16,7 @@ import type {
   ITableOption,
   ITablePageWithCurdOption,
 } from "eacon-components";
+import SelectV2 from "@/components/SelectV2/SelectV2.vue";
 
 import {
   createDevice,
@@ -37,20 +38,12 @@ type DeviceFormData = {
 
 const description = ["对接 device-center-AI 后端，实现设备真实分页查询与增删改查。"];
 
-const deviceTypeOptions = [
-  {
-    label: "运输设备",
-    value: "运输设备",
-  },
-  {
-    label: "采装设备",
-    value: "采装设备",
-  },
-  {
-    label: "辅助设备",
-    value: "辅助设备",
-  },
-];
+/** 2000 条 mock，用于压测 SelectV2 / ElSelectV2 虚拟列表 */
+const deviceTypeOptions = Array.from({ length: 2000 }, (_, index) => {
+  const n = index + 1;
+  const text = `设备类型_${String(n).padStart(4, "0")}`;
+  return { label: text, value: text };
+});
 
 async function getDeviceModelOptions() {
   try {
@@ -89,6 +82,27 @@ const queryOptions: IFormOption[] = [
       placeholder: "请输入设备编号",
     },
   },
+  {
+    label: "设备类型",
+    prop: "deviceType",
+    is: SelectV2,
+    componentAttrs: {
+      options: deviceTypeOptions,
+      clearable: true,
+      // multiple: true,
+      placeholder: "请选择设备类型",
+    },
+  },
+  // {
+  //   label: "设备类型",
+  //   prop: "deviceType1",
+  //   is: "ea-select",
+  //   componentAttrs: {
+  //     options: deviceTypeOptions,
+  //     clearable: true,
+  //     placeholder: "请选择设备类型",
+  //   },
+  // },
 ];
 
 const deviceModelOptions = reactive<{ label: string; value: string }[]>([]);
@@ -228,6 +242,7 @@ const tabOptions: ITablePageWithCurdOption[] = [
     queryOptions,
     queryValue: {
       deviceCode: "",
+      deviceType: "",
     },
     tableAttrs: {
       border: false,
@@ -241,6 +256,7 @@ const tabOptions: ITablePageWithCurdOption[] = [
         currentPage: Number(params.currentPage ?? 1),
         pageSize: Number(params.pageSize ?? 20),
         deviceCode: String(params.deviceCode ?? ""),
+        deviceType: String(params.deviceType ?? ""),
       }),
     getDetailData: async (row) => fetchDeviceDetail(String(row.id)),
     getPostData: async () => ({

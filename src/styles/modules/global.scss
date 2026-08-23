@@ -105,16 +105,8 @@ body {
   backdrop-filter: var(--ea-panel-backdrop);
 }
 
-.el-select-dropdown__item {
-  color: var(--ea-text-light);
-}
-
-.el-select-dropdown__item.hover,
-.el-select-dropdown__item.is-hovering {
-  background: var(--ea-primary-disabled);
-}
-
-.el-select-dropdown__item.is-selected {
-  color: var(--ea-primary);
-  font-weight: 700;
+/* 组件库树形选择器（EaTreeSelect）内部的 el-tree 默认背景为 --el-fill-color-blank，
+   在暗色主题下近乎黑色，与下拉面板背景不一致，改为透明 */
+.EaconComponentsTreeSelectPopper .el-tree {
+  background: transparent;
 }

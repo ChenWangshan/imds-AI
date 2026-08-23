@@ -10,13 +10,6 @@
         <EaButton @click="openVersionDialog">新增版本</EaButton>
         <EaButton :disabled="!currentQuery.menuVersion" @click="exportMenuVersion">导出</EaButton>
       </template>
-
-      <template #versionInfo>
-        <div class="version-info-cell" v-if="currentVersion">
-          <span>{{ currentVersion.versionCode }}</span>
-          <small>{{ currentVersion.snapshotHash || "待生成菜单指纹" }}</small>
-        </div>
-      </template>
     </EaTablePageWithCurd>
     <template v-if="versionDialogVisible">
       <EaDialog
@@ -125,7 +118,7 @@ const description = [
 const systemOptions: Option[] = [
   { label: "生产调度平台", value: "dispatch" },
   { label: "管理后台", value: "admin" },
-  { label: "智慧矿山综管平台（当前平台）", value: "integrated" },
+  { label: "智慧矿山综管平台", value: "integrated" },
 ];
 
 const menuTypeOptions: Option[] = [
@@ -163,10 +156,14 @@ const currentVersion = computed(() =>
 );
 
 function getVersionSelectOptions() {
-  return versionOptions.value.map((item) => ({
-    label: `${item.versionCode}（${getStatusLabel(item.status)}）`,
-    value: item.versionCode,
-  }));
+  return versionOptions.value.map((item) => {
+    const statusLabel = getStatusLabel(item.status);
+    const suffix = statusLabel === "草稿" ? "" : `（${statusLabel}）`;
+    return {
+      label: `${item.versionCode}${suffix}`,
+      value: item.versionCode,
+    };
+  });
 }
 
 const queryOptions = reactive<IFormOption[]>([
@@ -480,10 +477,6 @@ const tabOptions: ITablePageWithCurdOption[] = [
       "delete",
     ],
     pagination: false,
-    getTableTitle: () => {
-      if (!currentVersion.value) return "";
-      return `${currentVersion.value.versionCode} · ${getStatusLabel(currentVersion.value.status)} · ${currentVersion.value.snapshotHash || "待生成菜单指纹"}`;
-    },
     getTableOptions: async () => ({
       data: tableOptions,
     }),
@@ -662,7 +655,7 @@ function buildSelectTree(rows: SystemMenu[]) {
     .sort((a, b) => Number(a.sortNo ?? 0) - Number(b.sortNo ?? 0) || a.menuCode.localeCompare(b.menuCode))
     .forEach((item) => {
       nodes.set(item.menuCode, {
-        label: `${item.menuName}（${item.menuCode}）`,
+        label: item.menuName,
         value: item.menuCode,
         children: [],
       });
@@ -949,8 +942,7 @@ onMounted(async () => {
 }
 
 .menu-name-cell,
-.api-cell,
-.version-info-cell {
+.api-cell {
   display: flex;
   min-width: 0;
 }
@@ -961,23 +953,20 @@ onMounted(async () => {
 }
 
 .menu-name-cell-main,
-.api-cell,
-.version-info-cell {
+.api-cell {
   flex-direction: column;
   gap: 2px;
 }
 
 .menu-name-cell-main strong,
-.api-cell span,
-.version-info-cell span {
+.api-cell span {
   color: var(--ea-text1);
   font-weight: 600;
   line-height: 20px;
 }
 
 .menu-name-cell-main span,
-.api-cell small,
-.version-info-cell small {
+.api-cell small {
   color: var(--ea-text3);
   font-size: 12px;
   line-height: 18px;
@@ -1057,7 +1046,8 @@ onMounted(async () => {
   overflow: visible;
 }
 
-.el-popper.EaconComponentsSelectPopper {
+.el-popper.EaconComponentsSelectPopper,
+.el-popper.EaconComponentsTreeSelectPopper {
   z-index: 3020 !important;
 }
 
@@ -1065,7 +1055,7 @@ onMounted(async () => {
   width: auto !important;
   min-width: 0;
   flex: 1 1 auto !important;
-  color: var(--ea-text1, var(--el-text-color-primary));
+  color: inherit;
 }
 
 /* 新增菜单节点抽屉底部按钮间距（抽屉挂载到 body） */

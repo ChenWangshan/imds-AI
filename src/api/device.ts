@@ -33,6 +33,7 @@ export async function fetchDevicePage(query: {
   currentPage: number;
   pageSize: number;
   deviceCode?: string;
+  deviceType?: string;
 }) {
   return apiRequest<DevicePageResponse>(`${DEVICE_API_PREFIX}/devices`, {
     method: "GET",
@@ -43,6 +44,7 @@ export async function fetchDevicePage(query: {
       pageSize: query.pageSize,
       size: query.pageSize,
       deviceCode: query.deviceCode?.trim() || undefined,
+      deviceType: query.deviceType?.trim() || undefined,
     },
   });
 }

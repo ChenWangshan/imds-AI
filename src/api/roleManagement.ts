@@ -25,6 +25,7 @@ export type SystemRole = {
   id?: number | string;
   roleVersionCode: string;
   menuVersionCode: string;
+  mineAreas: string[];
   roleCode: string;
   roleName: string;
   status: RoleStatus | string;
@@ -40,8 +41,8 @@ export type SystemRolePageQuery = {
   currentPage: number;
   pageSize: number;
   keyword?: string;
+  mineAreas?: string[];
   roleVersion?: string;
-  status?: string;
 };
 
 export type SystemRolePageResponse = {
@@ -64,6 +65,9 @@ export type SystemRoleExportResponse = {
 function normalizeRolePayload(payload: Partial<SystemRole>) {
   return {
     description: String(payload.description ?? "").trim(),
+    mineAreas: Array.isArray(payload.mineAreas)
+      ? payload.mineAreas.map((item) => String(item).trim()).filter(Boolean)
+      : [],
     permissionCodes: Array.isArray(payload.permissionCodes)
       ? payload.permissionCodes.map((item) => String(item).trim()).filter(Boolean)
       : [],
@@ -98,12 +102,12 @@ export async function fetchSystemRolePage(query: SystemRolePageQuery) {
     params: {
       currentPage: query.currentPage,
       keyword: query.keyword?.trim() || undefined,
+      mineAreas: query.mineAreas?.length ? query.mineAreas.join(",") : undefined,
       page: query.currentPage,
       pageNum: query.currentPage,
       pageSize: query.pageSize,
       roleVersion: query.roleVersion?.trim() || undefined,
       size: query.pageSize,
-      status: query.status?.trim() || undefined,
     },
   });
 

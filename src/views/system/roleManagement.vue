@@ -26,15 +26,29 @@
       </template>
     </EaTablePageWithCurd>
 
-    <EaDrawer
-      v-model="versionDrawerVisible"
-      title="新增角色版本"
-      size-type="small"
-      :loading="versionSubmitting"
-      @confirm="submitVersion"
-    >
-      <EaForm v-model="versionForm" :options="versionFormOptions" :attrs="{ labelPosition: 'top' }" />
-    </EaDrawer>
+    <template v-if="versionDialogVisible">
+      <EaDialog
+        class="role-management-version-dialog"
+        v-model="versionDialogVisible"
+        title="新增角色版本"
+        width="480px"
+        destroy-on-close
+        append-to-body
+      >
+        <EaForm
+          :key="versionFormRenderKey"
+          v-model="versionForm"
+          :options="versionFormOptions"
+          :attrs="{ labelPosition: 'top' }"
+        />
+        <template #footer>
+          <div class="role-management-version-dialog__footer">
+            <EaButton @click="versionDialogVisible = false">取消</EaButton>
+            <EaButton type="primary" :loading="versionSubmitting" @click="submitVersion">确定</EaButton>
+          </div>
+        </template>
+      </EaDialog>
+    </template>
   </section>
 </template>
 
@@ -63,8 +77,6 @@ import {
   fetchSystemRolePage,
   fetchSystemRoleVersions,
   saveSystemRole,
-  type RoleStatus,
-  type RoleVersionStatus,
   type SystemRole,
   type SystemRoleVersion,
 } from "@/api/roleManagement";
@@ -83,29 +95,25 @@ type RoleFormData = Omit<SystemRole, "createdAt" | "updatedAt">;
 
 const DEFAULT_ROLE_VERSION = "5.20.0.0-role-default";
 const DEFAULT_MENU_VERSION = "5.20.0.0";
+const mineAreaOptions: Option[] = [
+  { label: "南露天剥离", value: "南露天剥离" },
+  { label: "将一矿", value: "将一矿" },
+  { label: "马朗矿", value: "马朗矿" },
+  { label: "白石湖矿", value: "白石湖矿" },
+  { label: "准东矿", value: "准东矿" },
+];
 
 const tablePageRef = ref<any>();
 const roleVersions = ref<SystemRoleVersion[]>([]);
 const menuVersions = ref<SystemMenuVersion[]>([]);
 const sourceRoles = ref<SystemRole[]>([]);
-const versionDrawerVisible = ref(false);
+const versionDialogVisible = ref(false);
 const versionSubmitting = ref(false);
+const versionFormRenderKey = ref(0);
 
 const description = [
   "按角色版本维护角色，角色版本必须绑定一个菜单版本。",
   "新增或编辑角色时，授权树会跟随绑定菜单版本，并可复用已有角色版本中的角色权限。",
-];
-
-const versionStatusOptions: Option[] = [
-  { label: "草稿", value: "DRAFT" },
-  { label: "待发布", value: "REVIEW" },
-  { label: "已发布", value: "PUBLISHED" },
-  { label: "已废弃", value: "ARCHIVED" },
-];
-
-const roleStatusOptions: Option[] = [
-  { label: "启用", value: "enabled" },
-  { label: "停用", value: "disabled" },
 ];
 
 const versionForm = reactive({
@@ -117,8 +125,10 @@ const currentQuery = computed(() => {
   const queryValue = tablePageRef.value?.queryValue ?? {};
   return {
     keyword: String(queryValue.keyword ?? ""),
+    mineAreas: Array.isArray(queryValue.mineAreas)
+      ? queryValue.mineAreas.map((item: unknown) => String(item))
+      : [],
     roleVersion: String(queryValue.roleVersion ?? DEFAULT_ROLE_VERSION),
-    status: String(queryValue.status ?? ""),
   };
 });
 
@@ -128,9 +138,14 @@ const currentRoleVersion = computed(() =>
 
 function getRoleVersionOptions() {
   return roleVersions.value.map((item) => ({
-    label: `${item.versionCode}（菜单 ${item.menuVersionCode}）`,
+    label: formatRoleVersionLabel(item.versionCode),
     value: item.versionCode,
   }));
+}
+
+function formatRoleVersionLabel(versionCode: string) {
+  const value = String(versionCode ?? "").trim();
+  return value.replace(/-role(?:-.+)?$/i, "") || value;
 }
 
 function getMenuVersionOptions() {
@@ -158,13 +173,15 @@ const queryOptions = reactive<IFormOption[]>([
     },
   },
   {
-    label: "角色状态",
-    prop: "status",
+    label: "所属矿区",
+    prop: "mineAreas",
     is: "ea-select",
     componentAttrs: {
       clearable: true,
-      options: roleStatusOptions,
-      placeholder: "请选择角色状态",
+      collapseTags: true,
+      multiple: true,
+      options: mineAreaOptions,
+      placeholder: "请选择所属矿区",
     },
   },
   {
@@ -205,6 +222,8 @@ const versionFormOptions = reactive<IFormOption[]>([
     },
     componentAttrs: {
       clearable: false,
+      filterable: false,
+      teleported: true,
       options: [],
       placeholder: "请选择菜单版本",
     },
@@ -221,6 +240,21 @@ const roleFormOptions = reactive<IFormOption[]>([
     label: "绑定菜单版本",
     prop: "menuVersionCode",
     disabled: () => true,
+  },
+  {
+    label: "所属矿区",
+    prop: "mineAreas",
+    is: "ea-select",
+    itemAttrs: {
+      rules: [{ required: true, message: "请选择所属矿区", trigger: "change" }],
+    },
+    componentAttrs: {
+      clearable: true,
+      collapseTags: true,
+      multiple: true,
+      options: mineAreaOptions,
+      placeholder: "请选择所属矿区",
+    },
   },
   {
     label: "角色编码",
@@ -242,16 +276,6 @@ const roleFormOptions = reactive<IFormOption[]>([
     componentAttrs: {
       clearable: true,
       placeholder: "请输入角色名称",
-    },
-  },
-  {
-    label: "状态",
-    prop: "status",
-    is: "ea-select",
-    componentAttrs: {
-      clearable: false,
-      options: roleStatusOptions,
-      placeholder: "请选择状态",
     },
   },
   {
@@ -313,9 +337,9 @@ const roleFormOptions = reactive<IFormOption[]>([
 const detailOptions: IDetailOption[] = [
   { label: "角色版本", prop: "roleVersionCode" },
   { label: "绑定菜单版本", prop: "menuVersionCode" },
+  { label: "所属矿区", prop: "mineAreas", componentAttrs: { formatter: formatMineAreas } },
   { label: "角色编码", prop: "roleCode" },
   { label: "角色名称", prop: "roleName" },
-  { label: "状态", prop: "status" },
   { label: "来源角色版本", prop: "sourceRoleVersionCode" },
   { label: "来源角色", prop: "sourceRoleCode" },
   { label: "授权权限", prop: "permissionCodes" },
@@ -349,20 +373,21 @@ const tableOptions: ITableOption[] = [
     },
   },
   {
+    label: "所属矿区",
+    prop: "mineAreas",
+    itemAttrs: {
+      formatter: (_row, _column, value) => formatMineAreas(value),
+      minWidth: 220,
+      showOverflowTooltip: true,
+    },
+  },
+  {
     label: "授权权限",
     prop: "permissionCodes",
     slot: "permissionCodes",
     itemAttrs: {
       minWidth: 260,
       showOverflowTooltip: true,
-    },
-  },
-  {
-    label: "状态",
-    prop: "status",
-    itemAttrs: {
-      formatter: (_row, _column, value) => getRoleStatusLabel(value),
-      minWidth: 100,
     },
   },
   {
@@ -382,17 +407,13 @@ const tabOptions: ITablePageWithCurdOption[] = [
     queryOptions,
     queryValue: {
       keyword: "",
+      mineAreas: [],
       roleVersion: DEFAULT_ROLE_VERSION,
-      status: "",
     },
     tableAttrs: {
       border: false,
     },
     tableButtons: ["detail", "put", "delete"],
-    getTableTitle: () => {
-      if (!currentRoleVersion.value) return "";
-      return `${currentRoleVersion.value.versionCode} · 菜单版本 ${currentRoleVersion.value.menuVersionCode} · ${currentRoleVersion.value.menuSnapshotHash || "待生成菜单指纹"}`;
-    },
     getTableOptions: async () => ({
       data: tableOptions,
     }),
@@ -400,9 +421,9 @@ const tabOptions: ITablePageWithCurdOption[] = [
       fetchSystemRolePage({
         currentPage: Number(params.currentPage ?? 1),
         keyword: String(params.keyword ?? ""),
+        mineAreas: normalizeMineAreas(params.mineAreas),
         pageSize: Number(params.pageSize ?? 20),
         roleVersion: String(params.roleVersion ?? ""),
-        status: String(params.status ?? ""),
       }),
     getDetailData: async (row) => {
       const detail = await fetchSystemRoleDetail(String(row.id));
@@ -451,6 +472,7 @@ function createEmptyRoleForm(extra: Partial<RoleFormData> = {}): RoleFormData {
     description: "",
     id: undefined,
     menuVersionCode: DEFAULT_MENU_VERSION,
+    mineAreas: [],
     permissionCodes: [],
     roleCode: "",
     roleName: "",
@@ -460,10 +482,6 @@ function createEmptyRoleForm(extra: Partial<RoleFormData> = {}): RoleFormData {
     status: "enabled",
     ...extra,
   };
-}
-
-function getRoleStatusLabel(value: unknown) {
-  return roleStatusOptions.find((item) => item.value === String(value ?? ""))?.label ?? String(value ?? "");
 }
 
 function splitPermissionCodes(value: unknown) {
@@ -476,22 +494,33 @@ function splitPermissionCodes(value: unknown) {
     .filter(Boolean);
 }
 
+function normalizeMineAreas(value: unknown) {
+  if (Array.isArray(value)) {
+    return value.map((item) => String(item).trim()).filter(Boolean);
+  }
+  return String(value ?? "")
+    .split(/\r?\n|,|，/)
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
+function formatMineAreas(value: unknown) {
+  return normalizeMineAreas(value).join("、") || "-";
+}
+
 function normalizeRoleForm(data: Partial<SystemRole>) {
   return {
     description: String(data.description ?? "").trim(),
     menuVersionCode: String(data.menuVersionCode ?? "").trim(),
+    mineAreas: normalizeMineAreas(data.mineAreas),
     permissionCodes: splitPermissionCodes(data.permissionCodes).filter((item) => !item.startsWith("__menu:")),
     roleCode: String(data.roleCode ?? "").trim(),
     roleName: String(data.roleName ?? "").trim(),
     roleVersionCode: String(data.roleVersionCode ?? currentQuery.value.roleVersion).trim(),
     sourceRoleCode: String(data.sourceRoleCode ?? "").trim(),
     sourceRoleVersionCode: String(data.sourceRoleVersionCode ?? "").trim(),
-    status: String(data.status ?? "enabled").trim() as RoleStatus,
+    status: "enabled",
   };
-}
-
-function getVersionStatusLabel(value: unknown) {
-  return versionStatusOptions.find((item) => item.value === String(value ?? ""))?.label ?? String(value ?? "");
 }
 
 function splitMenuPermissionCodes(value: unknown) {
@@ -549,10 +578,19 @@ function syncRoleVersionOptions() {
 }
 
 function syncMenuVersionOptions() {
-  versionFormOptions[1].componentAttrs = {
-    ...versionFormOptions[1].componentAttrs,
-    options: getMenuVersionOptions(),
+  const options = getMenuVersionOptions().map((item) => ({ ...item }));
+  versionFormOptions[1] = {
+    ...versionFormOptions[1],
+    componentAttrs: {
+      ...versionFormOptions[1].componentAttrs,
+      options,
+      clearable: false,
+      filterable: false,
+      teleported: true,
+      placeholder: "请选择菜单版本",
+    },
   };
+  versionFormRenderKey.value += 1;
 }
 
 function syncSourceRoleOptions() {
@@ -614,14 +652,16 @@ async function loadVersions() {
   }
 }
 
-function openVersionDrawer() {
+async function openVersionDrawer() {
+  await loadVersions();
   versionForm.versionCode = "";
   versionForm.menuVersionCode =
     currentRoleVersion.value?.menuVersionCode ||
     menuVersions.value.find((item) => item.versionCode === DEFAULT_MENU_VERSION)?.versionCode ||
     menuVersions.value[0]?.versionCode ||
     "";
-  versionDrawerVisible.value = true;
+  versionFormRenderKey.value += 1;
+  versionDialogVisible.value = true;
 }
 
 async function submitVersion() {
@@ -646,7 +686,7 @@ async function submitVersion() {
     if (queryValue) {
       queryValue.roleVersion = created.versionCode;
     }
-    versionDrawerVisible.value = false;
+    versionDialogVisible.value = false;
     ElMessage.success("角色版本已创建");
     refreshTable();
   } finally {
@@ -707,6 +747,12 @@ onMounted(async () => {
   gap: 12px;
 }
 
+.role-management-version-dialog__footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
 .role-name-cell,
 .permission-cell {
   display: flex;
@@ -727,5 +773,55 @@ onMounted(async () => {
   color: var(--ea-text3);
   font-size: 12px;
   line-height: 18px;
+}
+</style>
+
+<style lang="scss">
+.white .role-management-version-dialog.EaconComponentsDialog {
+  --bg: rgb(248, 251, 255);
+}
+
+.dark .role-management-version-dialog.EaconComponentsDialog {
+  --bg: rgb(12, 25, 36);
+}
+
+.role-management-version-dialog .EaconComponentsForm {
+  --ea-form-item-width: 100%;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.role-management-version-dialog .EaconComponentsFormItem {
+  flex: 1 1 100%;
+  max-width: 100%;
+}
+
+.role-management-version-dialog .EaconComponentsFormItem .el-form-item__content {
+  width: 100%;
+}
+
+.role-management-version-dialog .EaconComponentsFormItem .el-form-item__content > .EaconComponentsInput,
+.role-management-version-dialog .EaconComponentsFormItem .el-form-item__content > .EaconComponentsSelect {
+  width: 100%;
+}
+
+/* 新增角色版本弹框内「菜单版本」下拉：与菜单管理「基于版本」一致（裁剪 / 层级 / 选项文案宽度） */
+.role-management-version-dialog .el-dialog__body {
+  overflow: visible;
+}
+
+.el-popper.EaconComponentsSelectPopper,
+.el-popper.EaconComponentsTreeSelectPopper {
+  z-index: 3020 !important;
+}
+
+.el-popper.EaconComponentsSelectPopper .EaconComponentsSelectOptionLabel {
+  width: auto !important;
+  min-width: 0;
+  flex: 1 1 auto !important;
+  color: inherit;
 }
 </style>
