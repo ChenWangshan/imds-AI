@@ -57,6 +57,7 @@
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref, watch } from "vue";
 import { ElMessage } from "element-plus";
+import type { TableColumnCtx } from "element-plus";
 import type {
   IDetailOption,
   IFormOption,
@@ -344,7 +345,7 @@ const menuFormOptions = reactive<IFormOption[]>([
     prop: "permissionCodes",
     itemAttrs: {
       class: "menu-management-form-item--wide",
-    },
+    } as IFormOption["itemAttrs"],
     componentAttrs: {
       placeholder: "一行一个，或用逗号分隔，例如 system.menu.view",
       rows: 4,
@@ -357,7 +358,7 @@ const menuFormOptions = reactive<IFormOption[]>([
     prop: "apiBindings",
     itemAttrs: {
       class: "menu-management-form-item--wide",
-    },
+    } as IFormOption["itemAttrs"],
     componentAttrs: {
       placeholder: "一行一个，例如 GET /api/system/menus",
       rows: 5,
@@ -393,7 +394,8 @@ const tableOptions: ITableOption[] = [
     prop: "menuType",
     itemAttrs: {
       fixed: "left",
-      formatter: (_row, _column, value) => getMenuTypeLabel(value),
+      formatter: (_row: MenuTreeNode, _column: TableColumnCtx<MenuTreeNode>, value: unknown) =>
+        getMenuTypeLabel(value),
       minWidth: 120,
     },
   },
@@ -434,7 +436,8 @@ const tableOptions: ITableOption[] = [
     label: "系统名称",
     prop: "systemCode",
     itemAttrs: {
-      formatter: (_row, _column, value) => getSystemLabel(value),
+      formatter: (_row: MenuTreeNode, _column: TableColumnCtx<MenuTreeNode>, value: unknown) =>
+        getSystemLabel(value),
       minWidth: 120,
     },
   },
@@ -470,8 +473,8 @@ const tabOptions: ITablePageWithCurdOption[] = [
       "detail",
       {
         label: "新增",
-        show: (row) => row.menuType !== "BUTTON",
-        buttonClickEvent: (row) => openChildDrawer(row as SystemMenu),
+        show: (row: MenuTreeNode) => row.menuType !== "BUTTON",
+        buttonClickEvent: (row: MenuTreeNode) => openChildDrawer(row),
       },
       "put",
       "delete",
@@ -481,7 +484,7 @@ const tabOptions: ITablePageWithCurdOption[] = [
       data: tableOptions,
     }),
     getTableData,
-    getDetailData: async (row) => fetchSystemMenuDetail(String(row.id)),
+    getDetailData: async (row: MenuTreeNode) => fetchSystemMenuDetail(String(row.id)),
     getPostData: async () => {
       editingMenuCode.value = "";
       await ensureMenuCache(currentQuery.value.menuVersion, currentQuery.value.systemCode);
@@ -494,25 +497,25 @@ const tabOptions: ITablePageWithCurdOption[] = [
         systemCode: currentQuery.value.systemCode,
       });
     },
-    getPutData: async (row) => {
+    getPutData: async (row: MenuTreeNode) => {
       const detail = await fetchSystemMenuDetail(String(row.id));
       editingMenuCode.value = detail.menuCode;
       await ensureMenuCache(detail.modelCode, detail.systemCode);
       syncParentMenuOptions(detail.systemCode, detail.menuCode);
       return detail;
     },
-    handlePost: async (data) => {
+    handlePost: async (data: Record<string, unknown>) => {
       await saveSystemMenu(normalizeMenuForm(data as Partial<SystemMenu>));
       await loadVersions();
     },
-    handlePut: async (data) => {
+    handlePut: async (data: Record<string, unknown>) => {
       await saveSystemMenu({
         id: data.id as SystemMenu["id"],
         ...normalizeMenuForm(data as Partial<SystemMenu>),
       });
       await loadVersions();
     },
-    handleDelete: async (data) => {
+    handleDelete: async (data: Record<string, unknown>) => {
       await deleteSystemMenu(String(data.id));
       await loadVersions();
     },
@@ -700,7 +703,7 @@ function syncVersionOptions() {
 
 function setParentMenuFieldLocked(locked: boolean) {
   childDrawerLocksParentMenu.value = locked;
-  const opt = menuFormOptions.find((o) => o.prop === "parentMenuCode");
+  const opt = menuFormOptions.find((o: IFormOption) => o.prop === "parentMenuCode");
   if (opt?.componentAttrs && typeof opt.componentAttrs === "object") {
     opt.componentAttrs.clearable = !locked;
     if (locked) {
