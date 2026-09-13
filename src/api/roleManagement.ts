@@ -25,6 +25,7 @@ export type SystemRole = {
   id?: number | string;
   roleVersionCode: string;
   menuVersionCode: string;
+  systemCode: string;
   mineAreas: string[];
   roleCode: string;
   roleName: string;
@@ -43,6 +44,7 @@ export type SystemRolePageQuery = {
   keyword?: string;
   mineAreas?: string[];
   roleVersion?: string;
+  systemCode?: string;
 };
 
 export type SystemRolePageResponse = {
@@ -77,6 +79,7 @@ function normalizeRolePayload(payload: Partial<SystemRole>) {
     sourceRoleCode: String(payload.sourceRoleCode ?? "").trim(),
     sourceRoleVersionCode: String(payload.sourceRoleVersionCode ?? "").trim(),
     status: String(payload.status ?? "enabled").trim(),
+    systemCode: String(payload.systemCode ?? "").trim(),
   };
 }
 
@@ -108,6 +111,7 @@ export async function fetchSystemRolePage(query: SystemRolePageQuery) {
       pageSize: query.pageSize,
       roleVersion: query.roleVersion?.trim() || undefined,
       size: query.pageSize,
+      systemCode: query.systemCode?.trim() || undefined,
     },
   });
 
@@ -117,11 +121,12 @@ export async function fetchSystemRolePage(query: SystemRolePageQuery) {
   };
 }
 
-export async function fetchAllSystemRoles(roleVersion?: string) {
+export async function fetchAllSystemRoles(roleVersion?: string, systemCode?: string) {
   return apiRequest<SystemRole[]>("/api/system/roles/all", {
     method: "GET",
     params: {
       roleVersion: roleVersion?.trim() || undefined,
+      systemCode: systemCode?.trim() || undefined,
     },
   });
 }
@@ -152,12 +157,17 @@ export async function deleteSystemRole(id: number | string) {
   });
 }
 
-export async function exportSystemRoleVersion(roleVersion: string, roleCodes: string[] = []) {
+export async function exportSystemRoleVersion(
+  roleVersion: string,
+  systemCode?: string,
+  roleCodes: string[] = [],
+) {
   return apiRequest<SystemRoleExportResponse>("/api/system/roles/export", {
     method: "GET",
     params: {
       roleCodes: roleCodes.length ? roleCodes.join(",") : undefined,
       roleVersion: roleVersion.trim(),
+      systemCode: systemCode?.trim() || undefined,
     },
   });
 }

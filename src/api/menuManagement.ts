@@ -13,6 +13,7 @@ export type SystemMenu = {
   parentMenuCode: string;
   menuCode: string;
   menuName: string;
+  menuNameEn: string;
   menuType: MenuType | string;
   routePath: string;
   componentPath: string;
@@ -110,6 +111,7 @@ function normalizePayload(payload: Partial<SystemMenu>) {
     icon: String(payload.icon ?? "").trim(),
     menuCode: String(payload.menuCode ?? "").trim(),
     menuName: String(payload.menuName ?? "").trim(),
+    menuNameEn: String(payload.menuNameEn ?? "").trim(),
     menuType: String(payload.menuType ?? "MENU").trim(),
     modelCode: String(payload.modelCode ?? "").trim(),
     modelName: String(payload.modelName ?? "").trim(),

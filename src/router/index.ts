@@ -66,6 +66,28 @@ const router = createRouter({
           ],
         },
         {
+          path: "/map",
+          name: "map-root",
+          redirect: "/map/layer-management",
+          meta: {
+            icon: "map",
+            i18nKey: "route.mapRoot",
+            title: "地图管理",
+          },
+          children: [
+            {
+              path: "/map/layer-management",
+              name: "layer-management",
+              component: () => import("@/views/map/layerManagement.vue"),
+              meta: {
+                icon: "layers",
+                i18nKey: "route.layerManagement",
+                title: "图层管理",
+              },
+            },
+          ],
+        },
+        {
           path: "/production",
           name: "production-root",
           redirect: "/production/blending-plan",

@@ -80,6 +80,11 @@ import {
   type SystemRole,
   type SystemRoleVersion,
 } from "@/api/roleManagement";
+import {
+  DEFAULT_SYSTEM_CODE,
+  getSystemLabel,
+  systemOptions,
+} from "@/constants/system";
 
 type Option = {
   label: string;
@@ -113,7 +118,7 @@ const versionFormRenderKey = ref(0);
 
 const description = [
   "按角色版本维护角色，角色版本必须绑定一个菜单版本。",
-  "新增或编辑角色时，授权树会跟随绑定菜单版本，并可复用已有角色版本中的角色权限。",
+  "新增或编辑角色时，需指定所属系统，授权树会跟随绑定菜单版本与该系统过滤菜单，并可复用同一系统下已有角色版本中的角色权限。",
 ];
 
 const versionForm = reactive({
@@ -129,6 +134,7 @@ const currentQuery = computed(() => {
       ? queryValue.mineAreas.map((item: unknown) => String(item))
       : [],
     roleVersion: String(queryValue.roleVersion ?? DEFAULT_ROLE_VERSION),
+    systemCode: String(queryValue.systemCode ?? DEFAULT_SYSTEM_CODE),
   };
 });
 
@@ -167,6 +173,19 @@ const queryOptions = reactive<IFormOption[]>([
       clearable: false,
       options: [],
       placeholder: "请选择角色版本",
+    },
+    componentEvents: {
+      change: () => refreshTable(),
+    },
+  },
+  {
+    label: "系统名称",
+    prop: "systemCode",
+    is: "ea-select",
+    componentAttrs: {
+      clearable: false,
+      options: systemOptions,
+      placeholder: "请选择系统名称",
     },
     componentEvents: {
       change: () => refreshTable(),
@@ -242,6 +261,29 @@ const roleFormOptions = reactive<IFormOption[]>([
     disabled: () => true,
   },
   {
+    label: "系统名称",
+    prop: "systemCode",
+    is: "ea-select",
+    itemAttrs: {
+      rules: [{ required: true, message: "请选择系统名称", trigger: "change" }],
+    },
+    componentAttrs: {
+      clearable: false,
+      options: systemOptions,
+      placeholder: "请选择系统名称",
+    },
+    componentEvents: {
+      change: async (value) => {
+        value.permissionCodes = [];
+        await syncPermissionOptions(
+          String(value.menuVersionCode || currentRoleVersion.value?.menuVersionCode || DEFAULT_MENU_VERSION),
+          String(value.systemCode ?? ""),
+        );
+        await loadSourceRoles(String(value.sourceRoleVersionCode ?? ""), String(value.systemCode ?? ""));
+      },
+    },
+  },
+  {
     label: "所属矿区",
     prop: "mineAreas",
     is: "ea-select",
@@ -290,7 +332,10 @@ const roleFormOptions = reactive<IFormOption[]>([
     componentEvents: {
       change: async (value) => {
         value.sourceRoleCode = "";
-        await loadSourceRoles(String(value.sourceRoleVersionCode ?? ""));
+        await loadSourceRoles(
+          String(value.sourceRoleVersionCode ?? ""),
+          String(value.systemCode ?? ""),
+        );
       },
     },
   },
@@ -322,7 +367,6 @@ const roleFormOptions = reactive<IFormOption[]>([
         value: "value",
       },
     },
-    size: "large",
   },
   {
     label: "说明",
@@ -337,6 +381,7 @@ const roleFormOptions = reactive<IFormOption[]>([
 const detailOptions: IDetailOption[] = [
   { label: "角色版本", prop: "roleVersionCode" },
   { label: "绑定菜单版本", prop: "menuVersionCode" },
+  { label: "系统名称", prop: "systemCode", componentAttrs: { formatter: getSystemLabel } },
   { label: "所属矿区", prop: "mineAreas", componentAttrs: { formatter: formatMineAreas } },
   { label: "角色编码", prop: "roleCode" },
   { label: "角色名称", prop: "roleName" },
@@ -369,6 +414,15 @@ const tableOptions: ITableOption[] = [
     prop: "menuVersionCode",
     itemAttrs: {
       minWidth: 160,
+      showOverflowTooltip: true,
+    },
+  },
+  {
+    label: "系统名称",
+    prop: "systemCode",
+    itemAttrs: {
+      formatter: (_row, _column, value) => getSystemLabel(value),
+      minWidth: 140,
       showOverflowTooltip: true,
     },
   },
@@ -409,6 +463,7 @@ const tabOptions: ITablePageWithCurdOption[] = [
       keyword: "",
       mineAreas: [],
       roleVersion: DEFAULT_ROLE_VERSION,
+      systemCode: DEFAULT_SYSTEM_CODE,
     },
     tableAttrs: {
       border: false,
@@ -424,6 +479,7 @@ const tabOptions: ITablePageWithCurdOption[] = [
         mineAreas: normalizeMineAreas(params.mineAreas),
         pageSize: Number(params.pageSize ?? 20),
         roleVersion: String(params.roleVersion ?? ""),
+        systemCode: String(params.systemCode ?? ""),
       }),
     getDetailData: async (row) => {
       const detail = await fetchSystemRoleDetail(String(row.id));
@@ -434,7 +490,10 @@ const tabOptions: ITablePageWithCurdOption[] = [
     },
     getPostData: async () => {
       const roleVersion = currentRoleVersion.value;
-      await syncPermissionOptions(roleVersion?.menuVersionCode || DEFAULT_MENU_VERSION);
+      await syncPermissionOptions(
+        roleVersion?.menuVersionCode || DEFAULT_MENU_VERSION,
+        "",
+      );
       sourceRoles.value = [];
       syncSourceRoleOptions();
       return createEmptyRoleForm({
@@ -444,8 +503,8 @@ const tabOptions: ITablePageWithCurdOption[] = [
     },
     getPutData: async (row) => {
       const detail = await fetchSystemRoleDetail(String(row.id));
-      await syncPermissionOptions(detail.menuVersionCode);
-      await loadSourceRoles(detail.sourceRoleVersionCode);
+      await syncPermissionOptions(detail.menuVersionCode, detail.systemCode);
+      await loadSourceRoles(detail.sourceRoleVersionCode, detail.systemCode);
       return detail;
     },
     handlePost: async (data) => {
@@ -480,6 +539,7 @@ function createEmptyRoleForm(extra: Partial<RoleFormData> = {}): RoleFormData {
     sourceRoleCode: "",
     sourceRoleVersionCode: "",
     status: "enabled",
+    systemCode: "",
     ...extra,
   };
 }
@@ -520,6 +580,7 @@ function normalizeRoleForm(data: Partial<SystemRole>) {
     sourceRoleCode: String(data.sourceRoleCode ?? "").trim(),
     sourceRoleVersionCode: String(data.sourceRoleVersionCode ?? "").trim(),
     status: "enabled",
+    systemCode: String(data.systemCode ?? "").trim(),
   };
 }
 
@@ -567,14 +628,20 @@ function buildPermissionTree(menus: SystemMenu[]) {
 }
 
 function syncRoleVersionOptions() {
-  queryOptions[0].componentAttrs = {
-    ...queryOptions[0].componentAttrs,
-    options: getRoleVersionOptions(),
-  };
-  roleFormOptions[5].componentAttrs = {
-    ...roleFormOptions[5].componentAttrs,
-    options: getRoleVersionOptions(),
-  };
+  const queryOption = queryOptions.find((item) => item.prop === "roleVersion");
+  if (queryOption) {
+    queryOption.componentAttrs = {
+      ...queryOption.componentAttrs,
+      options: getRoleVersionOptions(),
+    };
+  }
+  const formOption = roleFormOptions.find((item) => item.prop === "sourceRoleVersionCode");
+  if (formOption) {
+    formOption.componentAttrs = {
+      ...formOption.componentAttrs,
+      options: getRoleVersionOptions(),
+    };
+  }
 }
 
 function syncMenuVersionOptions() {
@@ -594,27 +661,38 @@ function syncMenuVersionOptions() {
 }
 
 function syncSourceRoleOptions() {
-  roleFormOptions[6].componentAttrs = {
-    ...roleFormOptions[6].componentAttrs,
-    options: sourceRoles.value.map((item) => ({
-      label: `${item.roleName}（${item.roleCode}）`,
-      value: item.roleCode,
-    })),
-  };
+  const formOption = roleFormOptions.find((item) => item.prop === "sourceRoleCode");
+  if (formOption) {
+    formOption.componentAttrs = {
+      ...formOption.componentAttrs,
+      options: sourceRoles.value.map((item) => ({
+        label: `${item.roleName}（${item.roleCode}）`,
+        value: item.roleCode,
+      })),
+    };
+  }
 }
 
-async function syncPermissionOptions(menuVersionCode: string) {
-  const menus = await fetchAllSystemMenus({
-    menuVersion: menuVersionCode,
-  });
-  roleFormOptions[7].componentAttrs = {
-    ...roleFormOptions[7].componentAttrs,
-    data: buildPermissionTree(menus),
-  };
+async function syncPermissionOptions(menuVersionCode: string, systemCode: string) {
+  const menus = systemCode
+    ? await fetchAllSystemMenus({
+        menuVersion: menuVersionCode,
+        systemCode,
+      })
+    : [];
+  const formOption = roleFormOptions.find((item) => item.prop === "permissionCodes");
+  if (formOption) {
+    formOption.componentAttrs = {
+      ...formOption.componentAttrs,
+      data: buildPermissionTree(menus),
+    };
+  }
 }
 
-async function loadSourceRoles(roleVersionCode: string) {
-  sourceRoles.value = roleVersionCode ? await fetchAllSystemRoles(roleVersionCode) : [];
+async function loadSourceRoles(roleVersionCode: string, systemCode: string) {
+  sourceRoles.value = roleVersionCode
+    ? await fetchAllSystemRoles(roleVersionCode, systemCode)
+    : [];
   syncSourceRoleOptions();
 }
 
@@ -698,14 +776,15 @@ async function exportRoleVersion() {
   const roleVersion = currentQuery.value.roleVersion;
   if (!roleVersion) return;
 
-  const exported = await exportSystemRoleVersion(roleVersion);
+  const systemCode = currentQuery.value.systemCode;
+  const exported = await exportSystemRoleVersion(roleVersion, systemCode);
   const blob = new Blob([JSON.stringify(exported, null, 2)], {
     type: "application/json;charset=utf-8",
   });
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.href = url;
-  link.download = `role-package-${roleVersion}.json`;
+  link.download = `role-package-${roleVersion}-${systemCode}.json`;
   link.click();
   URL.revokeObjectURL(url);
   ElMessage.success("角色版本已导出");
@@ -823,5 +902,16 @@ onMounted(async () => {
   min-width: 0;
   flex: 1 1 auto !important;
   color: inherit;
+}
+
+/* 「所属矿区」多选下拉复选框：未选中时 Element Plus 默认背景为 --el-fill-color-blank（白），
+   与暗色主题下拉面板背景不一致，参照组件库 Checkbox 以 CSS 变量覆盖的方式改为透明 */
+.el-popper.EaconComponentsSelectPopper .EaconComponentsCheckbox {
+  --el-checkbox-bg-color: transparent;
+}
+
+/* 「授权权限」树形下拉复选框：同上，未选中背景改为透明，与下拉面板背景保持一致 */
+.el-popper.EaconComponentsTreeSelectPopper .el-tree .el-checkbox {
+  --el-checkbox-bg-color: transparent;
 }
 </style>

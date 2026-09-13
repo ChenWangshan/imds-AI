@@ -60,7 +60,9 @@ const defaultMessages = {
       dispatch: "智能调度",
       home: "首页",
       i18nConfig: "国际化配置",
+      layerManagement: "图层管理",
       mapMonitor: "地图监控",
+      mapRoot: "地图管理",
       materialProgress: "物料进度监控",
       menuManagement: "菜单管理",
       miningArea: "矿区管理",
@@ -91,6 +93,9 @@ const defaultMessages = {
     agent: {
       title: "Agent 工作台",
       subtitle: "在一个统一入口里承接会话、业务工具、结果解释与模块跳转。",
+    },
+    layerManagement: {
+      description: "对 eq-fleetcmder-web 地图监控的图层进行管理，包括图层样式配置。",
     },
   },
   en: {
@@ -135,7 +140,9 @@ const defaultMessages = {
       dispatch: "Smart Dispatch",
       home: "Home",
       i18nConfig: "I18n Config",
+      layerManagement: "Layer Management",
       mapMonitor: "Map Monitor",
+      mapRoot: "Map Management",
       materialProgress: "Material Progress",
       menuManagement: "Menu Management",
       miningArea: "Mining Area",
@@ -166,6 +173,9 @@ const defaultMessages = {
     agent: {
       title: "Agent Workbench",
       subtitle: "Use one entry for conversations, business tools, result explanations, and module navigation.",
+    },
+    layerManagement: {
+      description: "Manage map layers of the eq-fleetcmder-web map monitor, including layer style configuration.",
     },
   },
   ja: {
@@ -210,7 +220,9 @@ const defaultMessages = {
       dispatch: "スマート配車",
       home: "ホーム",
       i18nConfig: "国際化設定",
+      layerManagement: "レイヤー管理",
       mapMonitor: "マップ監視",
+      mapRoot: "地図管理",
       materialProgress: "材料進捗監視",
       menuManagement: "メニュー管理",
       miningArea: "鉱区管理",
@@ -241,6 +253,9 @@ const defaultMessages = {
     agent: {
       title: "Agent ワークベンチ",
       subtitle: "会話、業務ツール、結果説明、画面遷移を一つの入口で扱います。",
+    },
+    layerManagement: {
+      description: "eq-fleetcmder-web の地図監視レイヤーを管理し、レイヤースタイルの設定を行います。",
     },
   },
 };

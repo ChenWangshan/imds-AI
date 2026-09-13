@@ -78,6 +78,11 @@ import {
   type SystemMenu,
   type SystemMenuVersion,
 } from "@/api/menuManagement";
+import {
+  DEFAULT_SYSTEM_CODE,
+  getSystemLabel,
+  systemOptions,
+} from "@/constants/system";
 
 type Option = {
   label: string;
@@ -97,7 +102,6 @@ type TreeSelectNode = Option & {
 type MenuFormData = Omit<SystemMenu, "createdAt" | "updatedAt">;
 
 const DEFAULT_MENU_VERSION = "5.20.0.0";
-const DEFAULT_SYSTEM_CODE = "integrated";
 
 const tablePageRef = ref<any>();
 const versionOptions = ref<SystemMenuVersion[]>([]);
@@ -114,12 +118,6 @@ const versionFormRenderKey = ref(0);
 const description = [
   "按菜单版本维护目录、菜单、按钮、权限编码与 API 绑定。",
   "菜单指纹会随版本导出，用于边端导入时校验同名版本内容一致性。",
-];
-
-const systemOptions: Option[] = [
-  { label: "生产调度平台", value: "dispatch" },
-  { label: "管理后台", value: "admin" },
-  { label: "智慧矿山综管平台", value: "integrated" },
 ];
 
 const menuTypeOptions: Option[] = [
@@ -297,25 +295,25 @@ const menuFormOptions = reactive<IFormOption[]>([
     },
   },
   {
-    label: "菜单编码",
-    prop: "menuCode",
+    label: "菜单中文名称",
+    prop: "menuName",
     itemAttrs: {
-      rules: [{ required: true, message: "请输入菜单编码", trigger: "blur" }],
+      rules: [{ required: true, message: "请输入菜单中文名称", trigger: "blur" }],
     },
     componentAttrs: {
       clearable: true,
-      placeholder: "例如 system.menu",
+      placeholder: "请输入菜单中文名称",
     },
   },
   {
-    label: "菜单名称",
-    prop: "menuName",
+    label: "菜单英文名称",
+    prop: "menuNameEn",
     itemAttrs: {
-      rules: [{ required: true, message: "请输入菜单名称", trigger: "blur" }],
+      rules: [{ required: true, message: "请输入菜单英文名称", trigger: "blur" }],
     },
     componentAttrs: {
       clearable: true,
-      placeholder: "请输入菜单名称",
+      placeholder: "请输入菜单英文名称",
     },
   },
   {
@@ -330,28 +328,6 @@ const menuFormOptions = reactive<IFormOption[]>([
       options: menuTypeOptions,
       placeholder: "请选择菜单类型",
     },
-  },
-  {
-    label: "排序",
-    prop: "sortNo",
-    is: "ea-input",
-    componentAttrs: {
-      placeholder: "请输入排序号",
-      type: "number",
-    },
-  },
-  {
-    label: "权限编码",
-    prop: "permissionCodes",
-    itemAttrs: {
-      class: "menu-management-form-item--wide",
-    } as IFormOption["itemAttrs"],
-    componentAttrs: {
-      placeholder: "一行一个，或用逗号分隔，例如 system.menu.view",
-      rows: 4,
-      type: "textarea",
-    },
-    size: "large",
   },
   {
     label: "API 绑定",
@@ -372,17 +348,25 @@ const detailOptions: IDetailOption[] = [
   { label: "菜单版本", prop: "modelCode" },
   { label: "系统名称", prop: "systemCode", componentAttrs: { formatter: getSystemLabel } },
   { label: "父级菜单", prop: "parentMenuCode" },
-  { label: "菜单编码", prop: "menuCode" },
-  { label: "菜单名称", prop: "menuName" },
+  { label: "菜单中文名称", prop: "menuName" },
+  { label: "菜单英文名称", prop: "menuNameEn" },
   { label: "菜单类型", prop: "menuType", componentAttrs: { formatter: getMenuTypeLabel } },
-  { label: "权限编码", prop: "permissionCodes" },
   { label: "API 绑定", prop: "apiBindings" },
 ];
 
 const tableOptions: ITableOption[] = [
   {
-    label: "菜单名称",
+    label: "菜单中文名称",
     prop: "menuName",
+    itemAttrs: {
+      fixed: "left",
+      minWidth: 180,
+      showOverflowTooltip: true,
+    },
+  },
+  {
+    label: "菜单英文名称",
+    prop: "menuNameEn",
     itemAttrs: {
       fixed: "left",
       minWidth: 180,
@@ -400,27 +384,10 @@ const tableOptions: ITableOption[] = [
     },
   },
   {
-    label: "菜单编码",
-    prop: "menuCode",
-    itemAttrs: {
-      fixed: "left",
-      minWidth: 220,
-      showOverflowTooltip: true,
-    },
-  },
-  {
     label: "菜单版本",
     prop: "modelCode",
     itemAttrs: {
       minWidth: 140,
-      showOverflowTooltip: true,
-    },
-  },
-  {
-    label: "权限编码",
-    prop: "permissionCodes",
-    itemAttrs: {
-      minWidth: 260,
       showOverflowTooltip: true,
     },
   },
@@ -439,13 +406,6 @@ const tableOptions: ITableOption[] = [
       formatter: (_row: MenuTreeNode, _column: TableColumnCtx<MenuTreeNode>, value: unknown) =>
         getSystemLabel(value),
       minWidth: 120,
-    },
-  },
-  {
-    label: "排序",
-    prop: "sortNo",
-    itemAttrs: {
-      minWidth: 80,
     },
   },
 ];
@@ -536,6 +496,7 @@ function createEmptyMenuForm(extra: Partial<MenuFormData> = {}): MenuFormData {
     id: undefined,
     menuCode: "",
     menuName: "",
+    menuNameEn: "",
     menuType: "MENU",
     modelCode: DEFAULT_MENU_VERSION,
     modelName: DEFAULT_MENU_VERSION,
@@ -555,10 +516,6 @@ function getStatusLabel(value: unknown) {
   return statusOptions.find((item) => item.value === String(value ?? ""))?.label ?? String(value ?? "");
 }
 
-function getSystemLabel(value: unknown) {
-  return systemOptions.find((item) => item.value === String(value ?? ""))?.label ?? String(value ?? "");
-}
-
 function getMenuTypeLabel(value: unknown) {
   return menuTypeOptions.find((item) => item.value === String(value ?? ""))?.label ?? String(value ?? "");
 }
@@ -571,6 +528,31 @@ function cleanMultiline(value: unknown) {
     .join("\n");
 }
 
+function resolveMenuCode(data: Partial<SystemMenu>) {
+  const explicit = String(data.menuCode ?? "").trim();
+  if (explicit) return explicit;
+  if (editingMenuCode.value) return editingMenuCode.value;
+
+  const parent = String(data.parentMenuCode ?? "").trim();
+  const routePath = String(data.routePath ?? "")
+    .trim()
+    .split("/")
+    .map((seg) => seg.trim())
+    .filter(Boolean)
+    .join(".");
+
+  if (routePath) return routePath;
+
+  const leaf = String(data.menuName ?? "")
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+
+  const code = leaf || `menu-${Date.now().toString(36)}`;
+  return parent ? `${parent}.${code}` : code;
+}
+
 function normalizeMenuForm(data: Partial<SystemMenu>) {
   return {
     apiBindings: cleanMultiline(data.apiBindings),
@@ -578,8 +560,9 @@ function normalizeMenuForm(data: Partial<SystemMenu>) {
     description: String(data.description ?? "").trim(),
     enabled: Boolean(data.enabled ?? true),
     icon: String(data.icon ?? "").trim(),
-    menuCode: String(data.menuCode ?? "").trim(),
+    menuCode: resolveMenuCode(data),
     menuName: String(data.menuName ?? "").trim(),
+    menuNameEn: String(data.menuNameEn ?? "").trim(),
     menuType: String(data.menuType ?? "MENU").trim() as MenuType,
     modelCode: String(data.modelCode ?? currentQuery.value.menuVersion).trim(),
     modelName: String(data.modelName ?? currentVersion.value?.versionName ?? currentQuery.value.menuVersion).trim(),
@@ -837,8 +820,8 @@ async function openChildDrawer(parent: SystemMenu) {
 
 async function submitChildMenu() {
   const payload = normalizeMenuForm(childForm);
-  if (!payload.menuCode || !payload.menuName) {
-    ElMessage.warning("请输入菜单编码和菜单名称");
+  if (!payload.menuName) {
+    ElMessage.warning("请输入菜单名称");
     return;
   }
 
