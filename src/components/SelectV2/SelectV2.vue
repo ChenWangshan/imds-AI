@@ -204,6 +204,12 @@ defineExpose({
     }
 }
 .EaconComponentsSelectPopperV2 {
+    /* 未选中复选框：Element Plus 默认背景为 --el-fill-color-blank（白色），
+       与暗色主题下拉面板背景不一致，参照组件库 Checkbox 以 CSS 变量覆盖改为透明 */
+    .EaconComponentsCheckbox {
+        --el-checkbox-bg-color: transparent;
+    }
+
     .el-select-dropdown {
         .el-select-dropdown__list {
             margin: 0 12px;

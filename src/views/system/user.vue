@@ -24,6 +24,7 @@ import {
   updateUser as updateSystemUser,
 } from "@/api/systemUser";
 import { fetchAllSystemRoles } from "@/api/roleManagement";
+import SelectV2 from "@/components/SelectV2/SelectV2.vue";
 import { onMounted, reactive } from "vue";
 
 type UserFormData = {
@@ -77,7 +78,7 @@ async function loadRoleOptions() {
   try {
     const roles = await fetchAllSystemRoles();
     const options = roles.map((role) => ({
-      label: `${role.roleName}（${role.roleCode}）`,
+      label: role.roleName,
       value: `${role.roleVersionCode}::${role.systemCode}::${role.roleCode}`,
     }));
     roleOptions.splice(0, roleOptions.length, ...options);
@@ -153,10 +154,9 @@ const userFormOptions: IFormOption[] = [
   {
     label: "角色",
     prop: "roleBindings",
-    is: "ea-select",
+    is: SelectV2,
     componentAttrs: {
       clearable: true,
-      collapseTags: true,
       multiple: true,
       options: roleOptions,
       placeholder: "请选择角色",
