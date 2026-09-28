@@ -21,6 +21,12 @@ export default defineConfig(({ mode }) => {
         "@": fileURLToPath(new URL("./src", import.meta.url)),
       },
     },
+    // 本地 file: 链到 eacon-components 时，包内容更新不一定改 lockfile；
+    // 若走 optimizeDeps 缓存，易出现 lib JS 与 index.css 的 scoped hash 不一致，
+    // 导致 Icon/Button 等组件样式全部失效（图标变成 300x150）。
+    optimizeDeps: {
+      exclude: ["eacon-components"],
+    },
     server: {
       host: "0.0.0.0",
       proxy: {
