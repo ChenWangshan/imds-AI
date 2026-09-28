@@ -11,6 +11,8 @@ export default defineConfig(({ mode }) => {
     env.VITE_DISPATCH_CENTER_PROXY_TARGET || "http://127.0.0.1:8083";
   const agentCenterProxyTarget =
     env.VITE_AGENT_CENTER_PROXY_TARGET || "http://127.0.0.1:8084";
+  const eqfleetProxyTarget =
+    env.VITE_EQFLEET_PROXY_TARGET || "https://gateway-test12.eqfleetcmder.com";
 
   return {
     plugins: [vue()],
@@ -40,6 +42,11 @@ export default defineConfig(({ mode }) => {
           target: agentCenterProxyTarget,
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/agent-api/, ""),
+        },
+        "/eqfleet": {
+          target: eqfleetProxyTarget,
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/eqfleet/, ""),
         },
       },
     },

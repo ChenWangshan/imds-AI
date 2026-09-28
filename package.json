@@ -14,6 +14,7 @@
     "axios": "^1.14.0",
     "eacon-components": "file:../../../eacon/eq-web-components",
     "element-plus": "2.13.6",
+    "maplibre-gl": "5.21.1",
     "pinia": "3.0.4",
     "vue": "3.5.30",
     "vue-i18n": "11.3.0",
