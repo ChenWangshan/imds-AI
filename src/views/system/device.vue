@@ -17,6 +17,8 @@ import type {
   ITablePageWithCurdOption,
 } from "eacon-components";
 import SelectV2 from "@/components/SelectV2/SelectV2.vue";
+import { getDeviceTypeLabel, getVisibleDeviceTypeOptions } from "@/constants/device";
+import { useAuthStore } from "@/stores/modules/auth";
 
 import {
   createDevice,
@@ -38,12 +40,10 @@ type DeviceFormData = {
 
 const description = ["对接 device-center-AI 后端，实现设备真实分页查询与增删改查。"];
 
-/** 2000 条 mock，用于压测 SelectV2 / ElSelectV2 虚拟列表 */
-const deviceTypeOptions = Array.from({ length: 2000 }, (_, index) => {
-  const n = index + 1;
-  const text = `设备类型_${String(n).padStart(4, "0")}`;
-  return { label: text, value: text };
-});
+const authStore = useAuthStore();
+
+/** 按当前用户权限过滤设备类型下拉项 */
+const visibleDeviceTypeOptions = getVisibleDeviceTypeOptions(authStore.hasPermission);
 
 async function getDeviceModelOptions() {
   try {
@@ -87,7 +87,7 @@ const queryOptions: IFormOption[] = [
     prop: "deviceType",
     is: SelectV2,
     componentAttrs: {
-      options: deviceTypeOptions,
+      options: visibleDeviceTypeOptions,
       clearable: true,
       // multiple: true,
       placeholder: "请选择设备类型",
@@ -98,7 +98,7 @@ const queryOptions: IFormOption[] = [
   //   prop: "deviceType1",
   //   is: "ea-select",
   //   componentAttrs: {
-  //     options: deviceTypeOptions,
+  //     options: visibleDeviceTypeOptions,
   //     clearable: true,
   //     placeholder: "请选择设备类型",
   //   },
@@ -133,7 +133,7 @@ const deviceFormOptions: IFormOption[] = [
     },
     componentAttrs: {
       clearable: false,
-      options: deviceTypeOptions,
+      options: visibleDeviceTypeOptions,
       placeholder: "请选择设备类型",
     },
   },
@@ -182,6 +182,7 @@ const detailOptions: IDetailOption[] = [
   {
     label: "设备类型",
     prop: "deviceType",
+    formatter: (value: unknown) => getDeviceTypeLabel(value),
   },
   {
     label: "所属组织",
@@ -210,6 +211,8 @@ const tableOptions: ITableOption[] = [
     prop: "deviceType",
     itemAttrs: {
       minWidth: 220,
+      formatter: (_row: unknown, _column: unknown, value: unknown) =>
+        getDeviceTypeLabel(value),
     },
   },
   {

@@ -9,4 +9,6 @@ export type UserProfile = {
   enabled: boolean;
   id: number;
   username: string;
+  roles: string[];
+  permissions: string[];
 };

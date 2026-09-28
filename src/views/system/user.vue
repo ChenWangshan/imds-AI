@@ -23,6 +23,8 @@ import {
   fetchUserPage,
   updateUser as updateSystemUser,
 } from "@/api/systemUser";
+import { fetchAllSystemRoles } from "@/api/roleManagement";
+import { onMounted, reactive } from "vue";
 
 type UserFormData = {
   id?: number | string;
@@ -30,9 +32,36 @@ type UserFormData = {
   phone: string;
   email: string;
   password: string;
+  roleBindings: string[];
+};
+
+type RoleOption = {
+  label: string;
+  value: string;
 };
 
 const description = ["支持按用户名检索，并通过后端接口完成新增、详情、编辑、删除。"];
+
+/** 角色绑定值格式：roleVersionCode::systemCode::roleCode */
+const roleOptions = reactive<RoleOption[]>([]);
+
+function normalizeRoleBindings(value: unknown): string[] {
+  if (Array.isArray(value)) {
+    return value.map((item) => String(item).trim()).filter(Boolean);
+  }
+  return String(value ?? "")
+    .split(/\r?\n|,/)
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
+function formatRoleBindings(value: unknown) {
+  const bindings = normalizeRoleBindings(value);
+  if (!bindings.length) return "-";
+  return bindings
+    .map((binding) => roleOptions.find((item) => item.value === binding)?.label ?? binding)
+    .join("、");
+}
 
 function normalizeFormData(data: Partial<UserFormData>) {
   return {
@@ -40,8 +69,26 @@ function normalizeFormData(data: Partial<UserFormData>) {
     phone: String(data.phone ?? "").trim(),
     email: String(data.email ?? "").trim(),
     password: String(data.password ?? ""),
+    roleBindings: normalizeRoleBindings(data.roleBindings),
   };
 }
+
+async function loadRoleOptions() {
+  try {
+    const roles = await fetchAllSystemRoles();
+    const options = roles.map((role) => ({
+      label: `${role.roleName}（${role.roleCode}）`,
+      value: `${role.roleVersionCode}::${role.systemCode}::${role.roleCode}`,
+    }));
+    roleOptions.splice(0, roleOptions.length, ...options);
+  } catch {
+    roleOptions.splice(0, roleOptions.length);
+  }
+}
+
+onMounted(() => {
+  void loadRoleOptions();
+});
 
 const queryOptions: IFormOption[] = [
   {
@@ -103,6 +150,18 @@ const userFormOptions: IFormOption[] = [
       type: "password",
     },
   },
+  {
+    label: "角色",
+    prop: "roleBindings",
+    is: "ea-select",
+    componentAttrs: {
+      clearable: true,
+      collapseTags: true,
+      multiple: true,
+      options: roleOptions,
+      placeholder: "请选择角色",
+    },
+  },
 ];
 
 const detailOptions: IDetailOption[] = [
@@ -117,6 +176,11 @@ const detailOptions: IDetailOption[] = [
   {
     label: "邮箱",
     prop: "email",
+  },
+  {
+    label: "角色",
+    prop: "roleBindings",
+    formatter: (value: unknown) => formatRoleBindings(value),
   },
 ];
 
@@ -140,6 +204,15 @@ const tableOptions: ITableOption[] = [
     prop: "email",
     itemAttrs: {
       minWidth: 260,
+    },
+  },
+  {
+    label: "角色",
+    prop: "roleBindings",
+    itemAttrs: {
+      minWidth: 220,
+      formatter: (_row: unknown, _column: unknown, value: unknown) =>
+        formatRoleBindings(value),
     },
   },
 ];
@@ -190,6 +263,7 @@ const tabOptions: ITablePageWithCurdOption[] = [
       phone: "",
       email: "",
       password: "",
+      roleBindings: [],
     }),
     getPutData: async (row) => {
       const detail = await fetchUserDetail(String(row.id));
@@ -200,6 +274,7 @@ const tabOptions: ITablePageWithCurdOption[] = [
         phone: detail.phone ?? "",
         email: detail.email ?? "",
         password: detail.password ?? "",
+        roleBindings: detail.roleBindings ?? [],
       };
     },
     handlePost: createUser,

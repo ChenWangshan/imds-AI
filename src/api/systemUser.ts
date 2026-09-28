@@ -6,6 +6,7 @@ export type SystemUser = {
   phone?: string;
   email?: string;
   password?: string;
+  roleBindings?: string[];
 };
 
 type UserListQuery = {

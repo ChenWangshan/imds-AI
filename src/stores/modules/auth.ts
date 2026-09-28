@@ -27,6 +27,12 @@ export const useAuthStore = defineStore("auth", () => {
 
   const currentUser = computed(() => profile.value);
   const isLoggedIn = computed(() => Boolean(token.value));
+  const permissions = computed(() => profile.value?.permissions ?? []);
+
+  function hasPermission(code: string) {
+    if (!code) return true;
+    return permissions.value.includes("*") || permissions.value.includes(code);
+  }
 
   function persistToken() {
     window.localStorage.setItem(TOKEN_KEY, JSON.stringify(token.value));
@@ -51,10 +57,14 @@ export const useAuthStore = defineStore("auth", () => {
       token: token.value,
     });
 
-    profile.value = current;
+    profile.value = {
+      ...current,
+      permissions: Array.isArray(current.permissions) ? current.permissions : [],
+      roles: Array.isArray(current.roles) ? current.roles : [],
+    };
     persistProfile();
 
-    return current;
+    return profile.value;
   }
 
   async function login(username: string, password: string) {
@@ -88,9 +98,11 @@ export const useAuthStore = defineStore("auth", () => {
     auth,
     currentUser,
     fetchCurrentUser,
+    hasPermission,
     isLoggedIn,
     login,
     logout,
+    permissions,
     profile,
     token,
   };
