@@ -192,19 +192,9 @@ const router = createRouter({
               },
             },
             {
-              path: "/system/menu-management",
-              name: "menu-management",
-              component: () => import("@/views/system/menuManagement.vue"),
-              meta: {
-                icon: "grid",
-                i18nKey: "route.menuManagement",
-                title: "菜单管理",
-              },
-            },
-            {
               path: "/system/role-management",
               name: "role-management",
-              component: () => import("@/views/system/roleManagement.vue"),
+              component: () => import("@/views/system/roleManagementTabs.vue"),
               meta: {
                 icon: "userFilled",
                 i18nKey: "route.roleManagement",

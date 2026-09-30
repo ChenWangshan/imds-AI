@@ -5,6 +5,8 @@ export type SystemOption = {
 
 export const DEFAULT_SYSTEM_CODE = "integrated";
 
+export const DEFAULT_MENU_VERSION = "5.20.0.0";
+
 export const systemOptions: SystemOption[] = [
   { label: "生产调度平台", value: "dispatch" },
   { label: "后台管理系统", value: "admin" },

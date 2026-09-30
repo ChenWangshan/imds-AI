@@ -29,6 +29,11 @@ export default defineConfig(({ mode }) => {
     },
     server: {
       host: "0.0.0.0",
+      // Vite 8 的 forwardConsole（面向 AI Agent 的控制台转发）在 HMR WebSocket 尚未连接时，
+      // 一旦捕获到早期 console.error/warn 或 unhandledrejection，就会调用 send 抛错
+      // "send was called before connect"，且该 rejected promise 会再次触发 unhandledrejection 形成刷屏。
+      // 浏览器控制台本身已能看到真实报错，这里关闭转发以避免干扰。
+      forwardConsole: false,
       proxy: {
         "/api": {
           target: proxyTarget,

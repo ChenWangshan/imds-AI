@@ -9,7 +9,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, reactive } from "vue";
+import { computed, onMounted, reactive, ref } from "vue";
 import type {
   IDetailOption,
   IFormOption,
@@ -17,7 +17,15 @@ import type {
   ITablePageWithCurdOption,
 } from "eacon-components";
 import SelectV2 from "@/components/SelectV2/SelectV2.vue";
-import { getDeviceTypeLabel, getVisibleDeviceTypeOptions } from "@/constants/device";
+import {
+  buildDeviceTypeOptionsFromMenus,
+  type DeviceTypeOption,
+  getDeviceTypeLabel,
+  getVisibleDeviceTypeOptions,
+} from "@/constants/device";
+import { DEFAULT_MENU_VERSION, DEFAULT_SYSTEM_CODE } from "@/constants/system";
+import { resolveVisibleListFieldKeys } from "@/constants/listFields";
+import { fetchAllSystemMenus } from "@/api/menuManagement";
 import { useAuthStore } from "@/stores/modules/auth";
 
 import {
@@ -42,8 +50,40 @@ const description = ["对接 device-center-AI 后端，实现设备真实分页�
 
 const authStore = useAuthStore();
 
-/** 按当前用户权限过滤设备类型下拉项 */
-const visibleDeviceTypeOptions = getVisibleDeviceTypeOptions(authStore.hasPermission);
+/**
+ * 设备类型下拉项：来源于菜单管理「设备类型下拉」的子节点，按当前用户权限过滤。
+ * 菜单还未加载时先用常量兜底，保证下拉可用。
+ */
+const visibleDeviceTypeOptions = reactive<DeviceTypeOption[]>(
+  getVisibleDeviceTypeOptions(authStore.hasPermission),
+);
+
+/**
+ * 列表字段可见项：来源于菜单管理「列表字段」的子节点，按当前用户权限过滤。
+ * 仅影响表格列的展示（菜单类型 / 菜单版本 / API绑定），不影响数据请求。
+ */
+const visibleListFieldKeys = ref<string[]>(
+  resolveVisibleListFieldKeys([], authStore.hasPermission),
+);
+
+async function loadDeviceTypeOptions() {
+  try {
+    const menus = await fetchAllSystemMenus({
+      menuVersion: DEFAULT_MENU_VERSION,
+      systemCode: DEFAULT_SYSTEM_CODE,
+    });
+    const options = buildDeviceTypeOptionsFromMenus(menus, authStore.hasPermission);
+    visibleDeviceTypeOptions.splice(0, visibleDeviceTypeOptions.length, ...options);
+    visibleListFieldKeys.value = resolveVisibleListFieldKeys(menus, authStore.hasPermission);
+  } catch {
+    visibleDeviceTypeOptions.splice(
+      0,
+      visibleDeviceTypeOptions.length,
+      ...getVisibleDeviceTypeOptions(authStore.hasPermission),
+    );
+    visibleListFieldKeys.value = resolveVisibleListFieldKeys([], authStore.hasPermission);
+  }
+}
 
 async function getDeviceModelOptions() {
   try {
@@ -198,7 +238,7 @@ const detailOptions: IDetailOption[] = [
   },
 ];
 
-const tableOptions: ITableOption[] = [
+const baseTableOptions: ITableOption[] = [
   {
     label: "设备编号",
     prop: "deviceCode",
@@ -238,7 +278,41 @@ const tableOptions: ITableOption[] = [
   },
 ];
 
-const tabOptions: ITablePageWithCurdOption[] = [
+/** 可选列表字段：仅当用户在菜单「列表字段」中被授予对应权限时展示该列 */
+const optionalTableOptions: Record<string, ITableOption> = {
+  menuType: {
+    label: "菜单类型",
+    prop: "menuType",
+    itemAttrs: {
+      minWidth: 160,
+    },
+  },
+  modelCode: {
+    label: "菜单版本",
+    prop: "modelCode",
+    itemAttrs: {
+      minWidth: 160,
+      showOverflowTooltip: true,
+    },
+  },
+  apiBindings: {
+    label: "API绑定",
+    prop: "apiBindings",
+    itemAttrs: {
+      minWidth: 240,
+      showOverflowTooltip: true,
+    },
+  },
+};
+
+const tableOptions = computed<ITableOption[]>(() => [
+  ...baseTableOptions,
+  ...visibleListFieldKeys.value
+    .map((key) => optionalTableOptions[key])
+    .filter((item): item is ITableOption => Boolean(item)),
+]);
+
+const tabOptions = computed<ITablePageWithCurdOption[]>(() => [
   {
     label: "设备列表",
     value: "device-list",
@@ -252,7 +326,7 @@ const tabOptions: ITablePageWithCurdOption[] = [
     },
     tableButtons: ["detail", "put", "delete"],
     getTableOptions: async () => ({
-      data: tableOptions,
+      data: tableOptions.value,
     }),
     getTableData: async (params) =>
       fetchDevicePage({
@@ -284,10 +358,11 @@ const tabOptions: ITablePageWithCurdOption[] = [
     detailOptions,
     disabledConfirmBeforeCancelEdit: false,
   },
-];
+]);
 
 onMounted(() => {
   void loadDeviceModelOptions();
+  void loadDeviceTypeOptions();
 });
 </script>
 

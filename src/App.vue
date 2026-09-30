@@ -5,8 +5,8 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, watch } from "vue";
-import { RouterView } from "vue-router";
+import { computed, onBeforeUnmount, onMounted, watch } from "vue";
+import { RouterView, useRouter } from "vue-router";
 import zhCn from "element-plus/es/locale/lang/zh-cn";
 import en from "element-plus/es/locale/lang/en";
 import ja from "element-plus/es/locale/lang/ja";
@@ -17,6 +17,14 @@ import { useGlobalStore } from "@/stores/modules/global";
 
 const globalStore = useGlobalStore();
 const authStore = useAuthStore();
+const router = useRouter();
+
+function handleUnauthorized() {
+  authStore.logout();
+  if (router.currentRoute.value.path !== "/login") {
+    void router.replace("/login");
+  }
+}
 
 const elementLocaleMap = {
   en,
@@ -50,6 +58,14 @@ watch(
   },
   { immediate: true },
 );
+
+onMounted(() => {
+  window.addEventListener("auth:unauthorized", handleUnauthorized);
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener("auth:unauthorized", handleUnauthorized);
+});
 
 onMounted(async () => {
   try {

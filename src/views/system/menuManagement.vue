@@ -2,7 +2,7 @@
   <section class="menu-management-page">
     <EaTablePageWithCurd
       ref="tablePageRef"
-      title="菜单管理"
+      title="角色菜单"
       :description="description"
       :tab-options="tabOptions"
     >
@@ -330,6 +330,17 @@ const menuFormOptions = reactive<IFormOption[]>([
     },
   },
   {
+    label: "权限码",
+    prop: "permissionCodes",
+    itemAttrs: {
+      rules: [{ required: true, message: "请输入权限码", trigger: "blur" }],
+    },
+    componentAttrs: {
+      clearable: true,
+      placeholder: "请输入权限码",
+    },
+  },
+  {
     label: "API 绑定",
     prop: "apiBindings",
     itemAttrs: {
@@ -351,6 +362,7 @@ const detailOptions: IDetailOption[] = [
   { label: "菜单中文名称", prop: "menuName" },
   { label: "菜单英文名称", prop: "menuNameEn" },
   { label: "菜单类型", prop: "menuType", componentAttrs: { formatter: getMenuTypeLabel } },
+  { label: "权限码", prop: "permissionCodes" },
   { label: "API 绑定", prop: "apiBindings" },
 ];
 
@@ -381,6 +393,14 @@ const tableOptions: ITableOption[] = [
       formatter: (_row: MenuTreeNode, _column: TableColumnCtx<MenuTreeNode>, value: unknown) =>
         getMenuTypeLabel(value),
       minWidth: 120,
+    },
+  },
+  {
+    label: "权限码",
+    prop: "permissionCodes",
+    itemAttrs: {
+      minWidth: 220,
+      showOverflowTooltip: true,
     },
   },
   {
@@ -433,7 +453,6 @@ const tabOptions: ITablePageWithCurdOption[] = [
       "detail",
       {
         label: "新增",
-        show: (row: MenuTreeNode) => row.menuType !== "BUTTON",
         buttonClickEvent: (row: MenuTreeNode) => openChildDrawer(row),
       },
       "put",
@@ -705,10 +724,7 @@ function syncParentMenuOptions(systemCode: string, disabledMenuCode = "") {
   }
 
   const rows = allMenus.value.filter(
-    (item) =>
-      item.systemCode === systemCode &&
-      item.menuType !== "BUTTON" &&
-      !disabledCodes.has(item.menuCode),
+    (item) => item.systemCode === systemCode && !disabledCodes.has(item.menuCode),
   );
 
   menuFormOptions[2].componentAttrs = {
@@ -806,7 +822,7 @@ async function openChildDrawer(parent: SystemMenu) {
   Object.assign(
     childForm,
     createEmptyMenuForm({
-      menuType: parent.menuType === "MENU" ? "BUTTON" : "MENU",
+      menuType: parent.menuType === "DIRECTORY" ? "MENU" : "BUTTON",
       modelCode: parent.modelCode,
       modelName: parent.modelName,
       modelStatus: parent.modelStatus,
@@ -822,6 +838,10 @@ async function submitChildMenu() {
   const payload = normalizeMenuForm(childForm);
   if (!payload.menuName) {
     ElMessage.warning("请输入菜单名称");
+    return;
+  }
+  if (!payload.permissionCodes) {
+    ElMessage.warning("请输入权限码");
     return;
   }
 

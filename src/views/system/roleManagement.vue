@@ -591,6 +591,35 @@ function splitMenuPermissionCodes(value: unknown) {
     .filter(Boolean);
 }
 
+/** 权限编码末级动作 -> 中文名 */
+const permissionActionLabels: Record<string, string> = {
+  view: "查看",
+  create: "新增",
+  update: "编辑",
+  delete: "删除",
+  export: "导出",
+  import: "导入",
+  enable: "启用",
+  disable: "禁用",
+  assign: "分配",
+};
+
+function getPermissionActionLabel(permissionCode: string) {
+  const code = permissionCode.trim();
+  if (code.endsWith("version.create")) return "新增版本";
+  if (code.endsWith("version.export")) return "导出版本";
+  const action = code.split(".").pop() ?? "";
+  return permissionActionLabels[action] ?? "";
+}
+
+/** 权限编码的中文显示：按钮节点直接用按钮中文名，其余只显示操作名（父级菜单已体现归属） */
+function getPermissionLabel(permissionCode: string, menu: SystemMenu) {
+  if (menu.menuType === "BUTTON") {
+    return menu.menuName;
+  }
+  return getPermissionActionLabel(permissionCode) || permissionCode;
+}
+
 function buildPermissionTree(menus: SystemMenu[]) {
   const nodes = new Map<string, PermissionTreeNode>();
   const roots: PermissionTreeNode[] = [];
@@ -599,13 +628,24 @@ function buildPermissionTree(menus: SystemMenu[]) {
     .slice()
     .sort((a, b) => Number(a.sortNo ?? 0) - Number(b.sortNo ?? 0) || a.menuCode.localeCompare(b.menuCode))
     .forEach((menu) => {
-      const permissionChildren = splitMenuPermissionCodes(menu.permissionCodes).map((permissionCode) => ({
-        label: permissionCode,
+      const permissionCodes = splitMenuPermissionCodes(menu.permissionCodes);
+
+      // 按钮节点：直接作为可勾选叶子，值为权限编码，显示中文按钮名
+      if (menu.menuType === "BUTTON" && permissionCodes.length === 1) {
+        nodes.set(menu.menuCode, {
+          label: menu.menuName,
+          value: permissionCodes[0],
+        });
+        return;
+      }
+
+      const permissionChildren = permissionCodes.map((permissionCode) => ({
+        label: getPermissionLabel(permissionCode, menu),
         value: permissionCode,
       }));
 
       nodes.set(menu.menuCode, {
-        label: `${menu.menuName}（${menu.menuCode}）`,
+        label: menu.menuName,
         value: `__menu:${menu.menuCode}`,
         children: permissionChildren,
       });

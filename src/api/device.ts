@@ -9,6 +9,9 @@ export type DeviceRecord = {
   organization: string;
   vin: string;
   deviceModel: string;
+  menuType?: string;
+  modelCode?: string;
+  apiBindings?: string;
 };
 
 export type DeviceModelRecord = {

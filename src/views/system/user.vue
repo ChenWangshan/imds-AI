@@ -334,3 +334,11 @@ const tabOptions: ITablePageWithCurdOption[] = [
   display: flex;
 }
 </style>
+
+<style lang="scss">
+/* 编辑抽屉内的角色下拉（SelectV2）弹层层级需高于抽屉，否则弹层被抽屉遮挡，
+   表现为点击无响应、需多次点击后才能触发 */
+.el-popper.EaconComponentsSelectPopperV2 {
+  z-index: 3020 !important;
+}
+</style>

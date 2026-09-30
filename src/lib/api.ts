@@ -93,7 +93,14 @@ apiClient.interceptors.request.use(
 
 apiClient.interceptors.response.use(
   (response) => response.data,
-  (error: AxiosError) => Promise.reject(createApiError(error)),
+  (error: AxiosError) => {
+    const apiError = createApiError(error);
+    if (apiError.status === 401 && typeof window !== "undefined") {
+      // 会话已失效（被强制退出登录，或角色/权限变更后需重新登录），通知应用清理登录态
+      window.dispatchEvent(new CustomEvent("auth:unauthorized"));
+    }
+    return Promise.reject(apiError);
+  },
 );
 
 export async function apiRequest<T>(url: string, options: RequestOptions = {}): Promise<T> {
