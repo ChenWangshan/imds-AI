@@ -17,10 +17,10 @@
       status-icon
     >
       <el-form-item :label="t('common.username')" prop="username">
-        <el-input v-model="form.username" :placeholder="t('common.usernamePlaceholder')" />
+        <EaInput v-model="form.username" :placeholder="t('common.usernamePlaceholder')" />
       </el-form-item>
       <el-form-item :label="t('common.password')" prop="password">
-        <el-input
+        <EaInput
           v-model="form.password"
           show-password
           type="password"
@@ -28,16 +28,19 @@
         />
       </el-form-item>
 
-      <el-form-item prop="agreed">
-        <el-checkbox v-model="form.agreed">
-          {{ t("common.agreement") }}
-          <span class="login-card__privacy">{{ t("common.privacy") }}</span>
-        </el-checkbox>
+      <el-form-item prop="agreed" class="login-card__agreement-item">
+        <div class="login-card__agreement">
+          <EaCheckbox v-model="form.agreed" />
+          <span class="login-card__agreement-label" @click="form.agreed = !form.agreed">
+            {{ t("common.agreement") }}
+            <span class="login-card__privacy" @click.stop>{{ t("common.privacy") }}</span>
+          </span>
+        </div>
       </el-form-item>
 
-      <el-button class="login-card__submit" type="primary" @click="handleSubmit">
+      <EaButton class="login-card__submit" type="primary" @click="handleSubmit">
         {{ t("common.login") }}
-      </el-button>
+      </EaButton>
     </el-form>
   </section>
 </template>
@@ -144,23 +147,29 @@ async function handleSubmit() {
 
 .login-card__submit {
   width: 100%;
-  height: 42px;
+  height: 44px;
   margin-top: 8px;
-  border: 0;
-  border-radius: 14px;
-  background: var(--app-login-submit);
+  font-size: 16px;
 }
 
-.login-card :deep(.el-form-item__label),
-.login-card :deep(.el-checkbox__label) {
+.login-card :deep(.el-form-item__label) {
   color: var(--ea-text-light);
 }
 
-.login-card :deep(.el-input__wrapper) {
-  min-height: 40px;
-  border: 1px solid transparent;
-  background: var(--app-login-input-bg);
-  box-shadow: none;
+.login-card__agreement-item :deep(.el-form-item__content) {
+  line-height: 1.5;
+}
+
+.login-card__agreement {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.login-card__agreement-label {
+  color: var(--ea-text-light);
+  cursor: pointer;
+  user-select: none;
 }
 
 @media (max-width: 960px) {
