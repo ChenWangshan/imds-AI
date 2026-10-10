@@ -495,7 +495,7 @@ const tabOptions: ITablePageWithCurdOption[] = [
       await loadVersions();
     },
     handleDelete: async (data: Record<string, unknown>) => {
-      await deleteSystemMenu(String(data.id));
+      await deleteMenusWithDescendants(data as MenuTreeNode);
       await loadVersions();
     },
     postOptions: menuFormOptions,
@@ -690,6 +690,35 @@ function collectDescendantCodes(menuCode: string, systemCode: string, target: Se
       target.add(child.menuCode);
       collectDescendantCodes(child.menuCode, systemCode, target);
     });
+}
+
+async function deleteMenusWithDescendants(row: MenuTreeNode) {
+  const menus = await fetchAllSystemMenus({
+    menuVersion: row.modelCode,
+    systemCode: row.systemCode,
+  });
+
+  const descendants: SystemMenu[] = [];
+  const visited = new Set<string>([row.menuCode]);
+  const collect = (parentCode: string) => {
+    menus
+      .filter((item) => item.systemCode === row.systemCode && item.parentMenuCode === parentCode)
+      .forEach((child) => {
+        if (visited.has(child.menuCode)) return;
+        visited.add(child.menuCode);
+        descendants.push(child);
+        collect(child.menuCode);
+      });
+  };
+  collect(row.menuCode);
+
+  const targets = [...descendants.reverse(), row].filter(
+    (item) => item.id !== undefined && item.id !== null && item.id !== "",
+  );
+
+  for (const item of targets) {
+    await deleteSystemMenu(String(item.id));
+  }
 }
 
 function syncVersionOptions() {
