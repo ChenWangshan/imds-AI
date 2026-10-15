@@ -23,7 +23,7 @@ import MenuManagement from "./menuManagement.vue";
 const { t } = useI18n();
 
 const tabOptions: IPageTabsOption[] = [
-  { label: t("route.roleManagement"), value: "role" },
+  { label: "角色列表", value: "role" },
   { label: t("route.roleMenu"), value: "menu" },
 ];
 

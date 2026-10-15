@@ -7,6 +7,7 @@
       :tab-options="tabOptions"
     >
       <template #InsertTitleButton>
+        <EaButton @click="openDemo">矿区定制演示</EaButton>
         <EaButton @click="openVersionDialog">新增版本</EaButton>
         <EaButton :disabled="!currentQuery.menuVersion" @click="exportMenuVersion">导出</EaButton>
       </template>
@@ -56,6 +57,7 @@
 
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref, watch } from "vue";
+import { useRouter } from "vue-router";
 import { ElMessage } from "element-plus";
 import type { TableColumnCtx } from "element-plus";
 import type {
@@ -102,6 +104,11 @@ type TreeSelectNode = Option & {
 type MenuFormData = Omit<SystemMenu, "createdAt" | "updatedAt">;
 
 const DEFAULT_MENU_VERSION = "5.20.0.0";
+const router = useRouter();
+
+function openDemo() {
+  void router.push("/demo/role-menu");
+}
 
 const tablePageRef = ref<any>();
 const versionOptions = ref<SystemMenuVersion[]>([]);

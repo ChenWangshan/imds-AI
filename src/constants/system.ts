@@ -15,6 +15,14 @@ export const systemOptions: SystemOption[] = [
   { label: "矿卡客户端", value: "truck-client" },
 ];
 
+export const mineAreaOptions: SystemOption[] = [
+  { label: "南露天剥离", value: "南露天剥离" },
+  { label: "将一矿", value: "将一矿" },
+  { label: "马朗矿", value: "马朗矿" },
+  { label: "白石湖矿", value: "白石湖矿" },
+  { label: "准东矿", value: "准东矿" },
+];
+
 export function getSystemLabel(value: unknown) {
   return systemOptions.find((item) => item.value === String(value ?? ""))?.label ?? String(value ?? "");
 }

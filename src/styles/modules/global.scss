@@ -111,6 +111,12 @@ body {
   background: transparent;
 }
 
+/* 参照组件库 Checkbox：EaSelect 多选下拉中未选中复选框背景继承 Element Plus 默认
+   --el-checkbox-bg-color（--el-fill-color-blank），与下拉面板背景不一致，改为透明 */
+.EaconComponentsSelectPopper .EaconComponentsCheckbox {
+  --el-checkbox-bg-color: transparent;
+}
+
 /* 组件库 MessageBox（如删除二次确认）头部写死 height:20px，叠加 12px 上下内边距且
    全局 box-sizing:border-box 后内容区高度为 0，导致标题与关闭图标被压扁、错位、高度过小。
    放开头部高度并让关闭图标垂直居中。 */

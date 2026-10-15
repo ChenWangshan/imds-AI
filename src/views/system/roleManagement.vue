@@ -83,6 +83,7 @@ import {
 import {
   DEFAULT_SYSTEM_CODE,
   getSystemLabel,
+  mineAreaOptions,
   systemOptions,
 } from "@/constants/system";
 
@@ -100,13 +101,6 @@ type RoleFormData = Omit<SystemRole, "createdAt" | "updatedAt">;
 
 const DEFAULT_ROLE_VERSION = "5.20.0.0-role-default";
 const DEFAULT_MENU_VERSION = "5.20.0.0";
-const mineAreaOptions: Option[] = [
-  { label: "南露天剥离", value: "南露天剥离" },
-  { label: "将一矿", value: "将一矿" },
-  { label: "马朗矿", value: "马朗矿" },
-  { label: "白石湖矿", value: "白石湖矿" },
-  { label: "准东矿", value: "准东矿" },
-];
 
 const tablePageRef = ref<any>();
 const roleVersions = ref<SystemRoleVersion[]>([]);

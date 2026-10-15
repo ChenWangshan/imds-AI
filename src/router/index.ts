@@ -202,6 +202,16 @@ const router = createRouter({
               },
             },
             {
+              path: "/system/function-menu",
+              name: "function-menu",
+              component: () => import("@/views/system/functionMenu.vue"),
+              meta: {
+                icon: "memo",
+                i18nKey: "route.functionMenu",
+                title: "功能菜单",
+              },
+            },
+            {
               path: "/system/i18n-config",
               name: "i18n-config",
               component: () => import("@/views/system/i18nConfig.vue"),
@@ -214,6 +224,15 @@ const router = createRouter({
           ],
         },
       ],
+    },
+    {
+      path: "/demo/role-menu",
+      name: "role-menu-demo",
+      component: () => import("@/views/system/roleMenuDemo.vue"),
+      meta: {
+        menu: false,
+        demo: true,
+      },
     },
     {
       path: "/login",
@@ -235,6 +254,8 @@ const router = createRouter({
 });
 
 router.beforeEach(async (to) => {
+  if (to.meta.demo) return;
+
   const authStore = useAuthStore(pinia);
 
   if (authStore.token && !authStore.profile) {

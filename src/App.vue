@@ -68,6 +68,8 @@ onBeforeUnmount(() => {
 });
 
 onMounted(async () => {
+  if (router.currentRoute.value.meta.demo) return;
+
   try {
     await globalStore.initializeI18nConfig();
   } catch {
