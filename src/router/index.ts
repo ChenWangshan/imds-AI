@@ -152,6 +152,28 @@ const router = createRouter({
           ],
         },
         {
+          path: "/system-config",
+          name: "system-config",
+          redirect: "/system-config/function-menu",
+          meta: {
+            icon: "operation",
+            i18nKey: "route.systemConfig",
+            title: "系统配置",
+          },
+          children: [
+            {
+              path: "/system-config/function-menu",
+              name: "function-menu",
+              component: () => import("@/views/system/functionMenu.vue"),
+              meta: {
+                icon: "memo",
+                i18nKey: "route.functionMenu",
+                title: "功能菜单",
+              },
+            },
+          ],
+        },
+        {
           path: "/system",
           name: "system",
           redirect: "/system/user",
@@ -199,16 +221,6 @@ const router = createRouter({
                 icon: "userFilled",
                 i18nKey: "route.roleManagement",
                 title: "角色管理",
-              },
-            },
-            {
-              path: "/system/function-menu",
-              name: "function-menu",
-              component: () => import("@/views/system/functionMenu.vue"),
-              meta: {
-                icon: "memo",
-                i18nKey: "route.functionMenu",
-                title: "功能菜单",
               },
             },
             {
